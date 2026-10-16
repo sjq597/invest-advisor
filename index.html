@@ -1333,6 +1333,7 @@
             <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importDataJSON(event)">
           </label>
           <button class="btn btn-primary" onclick="loadSampleData()">载入示例数据</button>
+           <button class="btn btn-outline" onclick="loadPressureData()">载入压力测试数据</button>
           <button class="btn btn-danger" onclick="clearAllData()">清空所有数据</button>
         </div>
       </div>
@@ -4762,6 +4763,1622 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
     }
 
     // 示例数据装载
+    const PRESSURE_DATA = {
+  "settings": {
+    "usdRate": 7.2,
+    "hkdRate": 0.92
+  },
+  "holdings": [
+    {
+      "id": "h001",
+      "category": "a_stock",
+      "name": "贵州茅台",
+      "code": "600519",
+      "currency": "CNY",
+      "shares": 1600,
+      "costPrice": 1937.8596,
+      "currentPrice": 1750.0
+    },
+    {
+      "id": "h002",
+      "category": "a_stock",
+      "name": "宁德时代",
+      "code": "300750",
+      "currency": "CNY",
+      "shares": 2100,
+      "costPrice": 229.4203,
+      "currentPrice": 250.0
+    },
+    {
+      "id": "h003",
+      "category": "a_stock",
+      "name": "招商银行",
+      "code": "600036",
+      "currency": "CNY",
+      "shares": 1900,
+      "costPrice": 34.1167,
+      "currentPrice": 45.0
+    },
+    {
+      "id": "h004",
+      "category": "a_stock",
+      "name": "长江电力",
+      "code": "600900",
+      "currency": "CNY",
+      "shares": 2100,
+      "costPrice": 30.5321,
+      "currentPrice": 30.0
+    },
+    {
+      "id": "h005",
+      "category": "a_stock",
+      "name": "万华化学",
+      "code": "600309",
+      "currency": "CNY",
+      "shares": 1600,
+      "costPrice": 74.1546,
+      "currentPrice": 85.0
+    },
+    {
+      "id": "h006",
+      "category": "etf_lof",
+      "name": "沪深300ETF",
+      "code": "510300",
+      "currency": "CNY",
+      "shares": 2600,
+      "costPrice": 3.8603,
+      "currentPrice": 3.92
+    },
+    {
+      "id": "h007",
+      "category": "etf_lof",
+      "name": "科创50ETF",
+      "code": "588000",
+      "currency": "CNY",
+      "shares": 2300,
+      "costPrice": 1.2039,
+      "currentPrice": 1.1
+    },
+    {
+      "id": "h008",
+      "category": "etf_lof",
+      "name": "红利低波ETF",
+      "code": "512890",
+      "currency": "CNY",
+      "shares": 1300,
+      "costPrice": 1.6526,
+      "currentPrice": 1.52
+    },
+    {
+      "id": "h009",
+      "category": "mutual_fund",
+      "name": "易方达蓝筹精选",
+      "code": "005827",
+      "currency": "CNY",
+      "shares": 1600,
+      "costPrice": 1.628,
+      "currentPrice": 2.05
+    },
+    {
+      "id": "h010",
+      "category": "mutual_fund",
+      "name": "富国天惠成长",
+      "code": "161005",
+      "currency": "CNY",
+      "shares": 2400,
+      "costPrice": 1.0498,
+      "currentPrice": 1.85
+    },
+    {
+      "id": "h011",
+      "category": "hk_us_stock",
+      "name": "腾讯控股",
+      "code": "00700",
+      "currency": "HKD",
+      "shares": 140,
+      "costPrice": 540.8425,
+      "currentPrice": 385.0
+    },
+    {
+      "id": "h012",
+      "category": "hk_us_stock",
+      "name": "阿里巴巴",
+      "code": "09988",
+      "currency": "HKD",
+      "shares": 290,
+      "costPrice": 80.34,
+      "currentPrice": 110.0
+    },
+    {
+      "id": "h013",
+      "category": "hk_us_stock",
+      "name": "苹果公司",
+      "code": "AAPL",
+      "currency": "USD",
+      "shares": 200,
+      "costPrice": 269.7431,
+      "currentPrice": 228.0
+    },
+    {
+      "id": "h014",
+      "category": "hk_us_stock",
+      "name": "英伟达",
+      "code": "NVDA",
+      "currency": "USD",
+      "shares": 190,
+      "costPrice": 99.0864,
+      "currentPrice": 130.0
+    },
+    {
+      "id": "hf01",
+      "category": "bank_wealth",
+      "name": "招行季季开1号",
+      "currency": "CNY",
+      "principal": 150000,
+      "annualRate": 3.1,
+      "startDate": "2026-06-01",
+      "endDate": "2026-11-05"
+    },
+    {
+      "id": "hf02",
+      "category": "bank_wealth",
+      "name": "工行添利宝",
+      "currency": "CNY",
+      "principal": 80000,
+      "annualRate": 2.8,
+      "startDate": "2026-08-15",
+      "endDate": "2027-02-15"
+    },
+    {
+      "id": "hf03",
+      "category": "bank_wealth",
+      "name": "建行龙宝季季盈",
+      "currency": "CNY",
+      "principal": 200000,
+      "annualRate": 3.4,
+      "startDate": "2025-10-16",
+      "endDate": "2026-10-30"
+    },
+    {
+      "id": "hf04",
+      "category": "deposit",
+      "name": "工行三年期大额存单",
+      "currency": "CNY",
+      "principal": 300000,
+      "annualRate": 3.0,
+      "startDate": "2024-11-01",
+      "endDate": "2027-11-01"
+    },
+    {
+      "id": "hf05",
+      "category": "deposit",
+      "name": "招行一年期定存",
+      "currency": "CNY",
+      "principal": 100000,
+      "annualRate": 1.9,
+      "startDate": "2026-03-01",
+      "endDate": "2027-03-01"
+    },
+    {
+      "id": "hc01",
+      "category": "cash",
+      "name": "活期存款与货币基金",
+      "currency": "CNY",
+      "amount": 60000
+    }
+  ],
+  "transactions": [
+    {
+      "id": "tx0077",
+      "date": "2024-10-28",
+      "holdingId": "h011",
+      "targetName": "腾讯控股 (00700)",
+      "type": "buy",
+      "shares": 50,
+      "price": 519.1744,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0016",
+      "date": "2024-10-29",
+      "holdingId": "h003",
+      "targetName": "招商银行 (600036)",
+      "type": "buy",
+      "shares": 100,
+      "price": 37.5921,
+      "fee": 5.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0067",
+      "date": "2024-11-01",
+      "holdingId": "h010",
+      "targetName": "富国天惠成长 (161005)",
+      "type": "buy",
+      "shares": 400,
+      "price": 0.7575,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0055",
+      "date": "2024-11-05",
+      "holdingId": "h008",
+      "targetName": "红利低波ETF (512890)",
+      "type": "buy",
+      "shares": 100,
+      "price": 1.365,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0068",
+      "date": "2024-11-09",
+      "holdingId": "h010",
+      "targetName": "富国天惠成长 (161005)",
+      "type": "buy",
+      "shares": 600,
+      "price": 0.7583,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0039",
+      "date": "2024-11-10",
+      "holdingId": "h006",
+      "targetName": "沪深300ETF (510300)",
+      "type": "buy",
+      "shares": 300,
+      "price": 3.4092,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0097",
+      "date": "2024-11-13",
+      "holdingId": "h013",
+      "targetName": "苹果公司 (AAPL)",
+      "type": "buy",
+      "shares": 20,
+      "price": 214.7036,
+      "fee": 0.0,
+      "currency": "USD"
+    },
+    {
+      "id": "tx0040",
+      "date": "2024-11-30",
+      "holdingId": "h006",
+      "targetName": "沪深300ETF (510300)",
+      "type": "buy",
+      "shares": 100,
+      "price": 3.4287,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0087",
+      "date": "2024-12-06",
+      "holdingId": "h012",
+      "targetName": "阿里巴巴 (09988)",
+      "type": "buy",
+      "shares": 50,
+      "price": 47.2683,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0001",
+      "date": "2024-12-08",
+      "holdingId": "h001",
+      "targetName": "贵州茅台 (600519)",
+      "type": "buy",
+      "shares": 300,
+      "price": 1664.7657,
+      "fee": 149.83,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0029",
+      "date": "2024-12-18",
+      "holdingId": "h005",
+      "targetName": "万华化学 (600309)",
+      "type": "buy",
+      "shares": 100,
+      "price": 63.3706,
+      "fee": 5.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0030",
+      "date": "2024-12-24",
+      "holdingId": "h005",
+      "targetName": "万华化学 (600309)",
+      "type": "buy",
+      "shares": 400,
+      "price": 63.9578,
+      "fee": 7.67,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0078",
+      "date": "2024-12-26",
+      "holdingId": "h011",
+      "targetName": "腾讯控股 (00700)",
+      "type": "buy",
+      "shares": 10,
+      "price": 493.4992,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0088",
+      "date": "2025-01-02",
+      "holdingId": "h012",
+      "targetName": "阿里巴巴 (09988)",
+      "type": "buy",
+      "shares": 50,
+      "price": 52.6132,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0017",
+      "date": "2025-01-10",
+      "holdingId": "h003",
+      "targetName": "招商银行 (600036)",
+      "type": "buy",
+      "shares": 400,
+      "price": 38.3887,
+      "fee": 5.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0069",
+      "date": "2025-01-14",
+      "holdingId": "h010",
+      "targetName": "富国天惠成长 (161005)",
+      "type": "buy",
+      "shares": 100,
+      "price": 0.8248,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0079",
+      "date": "2025-01-31",
+      "holdingId": "h011",
+      "targetName": "腾讯控股 (00700)",
+      "type": "buy",
+      "shares": 20,
+      "price": 470.9211,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0021",
+      "date": "2025-02-01",
+      "holdingId": "h004",
+      "targetName": "长江电力 (600900)",
+      "type": "buy",
+      "shares": 300,
+      "price": 30.2672,
+      "fee": 5.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0049",
+      "date": "2025-02-04",
+      "holdingId": "h007",
+      "targetName": "科创50ETF (588000)",
+      "type": "buy",
+      "shares": 300,
+      "price": 1.0207,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0031",
+      "date": "2025-02-06",
+      "holdingId": "h005",
+      "targetName": "万华化学 (600309)",
+      "type": "buy",
+      "shares": 100,
+      "price": 59.4714,
+      "fee": 5.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0018",
+      "date": "2025-02-18",
+      "holdingId": "h003",
+      "targetName": "招商银行 (600036)",
+      "type": "buy",
+      "shares": 600,
+      "price": 36.027,
+      "fee": 6.48,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0070",
+      "date": "2025-03-06",
+      "holdingId": "h010",
+      "targetName": "富国天惠成长 (161005)",
+      "type": "buy",
+      "shares": 300,
+      "price": 0.9419,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0002",
+      "date": "2025-03-11",
+      "holdingId": "h001",
+      "targetName": "贵州茅台 (600519)",
+      "type": "buy",
+      "shares": 100,
+      "price": 1881.742,
+      "fee": 56.45,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0080",
+      "date": "2025-03-19",
+      "holdingId": "h011",
+      "targetName": "腾讯控股 (00700)",
+      "type": "buy",
+      "shares": 10,
+      "price": 492.0478,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0041",
+      "date": "2025-03-20",
+      "holdingId": "h006",
+      "targetName": "沪深300ETF (510300)",
+      "type": "buy",
+      "shares": 300,
+      "price": 3.8276,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0107",
+      "date": "2025-03-25",
+      "holdingId": "h014",
+      "targetName": "英伟达 (NVDA)",
+      "type": "buy",
+      "shares": 10,
+      "price": 53.9744,
+      "fee": 0.0,
+      "currency": "USD"
+    },
+    {
+      "id": "tx0022",
+      "date": "2025-03-28",
+      "holdingId": "h004",
+      "targetName": "长江电力 (600900)",
+      "type": "buy",
+      "shares": 600,
+      "price": 30.3933,
+      "fee": 5.47,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0003",
+      "date": "2025-04-13",
+      "holdingId": "h001",
+      "targetName": "贵州茅台 (600519)",
+      "type": "buy",
+      "shares": 400,
+      "price": 1814.8444,
+      "fee": 217.78,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0023",
+      "date": "2025-04-16",
+      "holdingId": "h004",
+      "targetName": "长江电力 (600900)",
+      "type": "buy",
+      "shares": 200,
+      "price": 29.0063,
+      "fee": 5.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0004",
+      "date": "2025-04-27",
+      "holdingId": "h001",
+      "targetName": "贵州茅台 (600519)",
+      "type": "buy",
+      "shares": 600,
+      "price": 1862.3329,
+      "fee": 335.22,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0089",
+      "date": "2025-06-08",
+      "holdingId": "h012",
+      "targetName": "阿里巴巴 (09988)",
+      "type": "buy",
+      "shares": 50,
+      "price": 64.9832,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0108",
+      "date": "2025-06-25",
+      "holdingId": "h014",
+      "targetName": "英伟达 (NVDA)",
+      "type": "buy",
+      "shares": 60,
+      "price": 64.458,
+      "fee": 0.0,
+      "currency": "USD"
+    },
+    {
+      "id": "tx0060",
+      "date": "2025-07-04",
+      "holdingId": "h009",
+      "targetName": "易方达蓝筹精选 (005827)",
+      "type": "buy",
+      "shares": 200,
+      "price": 1.386,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0061",
+      "date": "2025-07-08",
+      "holdingId": "h009",
+      "targetName": "易方达蓝筹精选 (005827)",
+      "type": "buy",
+      "shares": 600,
+      "price": 1.403,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0071",
+      "date": "2025-07-09",
+      "holdingId": "h010",
+      "targetName": "富国天惠成长 (161005)",
+      "type": "buy",
+      "shares": 100,
+      "price": 1.0916,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0005",
+      "date": "2025-07-15",
+      "holdingId": "h001",
+      "targetName": "贵州茅台 (600519)",
+      "type": "buy",
+      "shares": 200,
+      "price": 2037.4249,
+      "fee": 122.25,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0006",
+      "date": "2025-07-24",
+      "holdingId": "h001",
+      "targetName": "贵州茅台 (600519)",
+      "type": "buy",
+      "shares": 200,
+      "price": 2125.2977,
+      "fee": 127.52,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0098",
+      "date": "2025-07-28",
+      "holdingId": "h013",
+      "targetName": "苹果公司 (AAPL)",
+      "type": "buy",
+      "shares": 60,
+      "price": 347.7642,
+      "fee": 0.0,
+      "currency": "USD"
+    },
+    {
+      "id": "tx0010",
+      "date": "2025-07-29",
+      "holdingId": "h002",
+      "targetName": "宁德时代 (300750)",
+      "type": "buy",
+      "shares": 500,
+      "price": 150.6025,
+      "fee": 22.59,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0056",
+      "date": "2025-08-09",
+      "holdingId": "h008",
+      "targetName": "红利低波ETF (512890)",
+      "type": "buy",
+      "shares": 600,
+      "price": 1.7192,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0072",
+      "date": "2025-09-08",
+      "holdingId": "h010",
+      "targetName": "富国天惠成长 (161005)",
+      "type": "buy",
+      "shares": 100,
+      "price": 1.2241,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0011",
+      "date": "2025-09-11",
+      "holdingId": "h002",
+      "targetName": "宁德时代 (300750)",
+      "type": "buy",
+      "shares": 400,
+      "price": 217.7981,
+      "fee": 26.14,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0057",
+      "date": "2025-09-20",
+      "holdingId": "h008",
+      "targetName": "红利低波ETF (512890)",
+      "type": "buy",
+      "shares": 200,
+      "price": 1.887,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0012",
+      "date": "2025-09-22",
+      "holdingId": "h002",
+      "targetName": "宁德时代 (300750)",
+      "type": "buy",
+      "shares": 200,
+      "price": 188.8094,
+      "fee": 11.33,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0013",
+      "date": "2025-09-22",
+      "holdingId": "h002",
+      "targetName": "宁德时代 (300750)",
+      "type": "buy",
+      "shares": 300,
+      "price": 188.6595,
+      "fee": 16.98,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0007",
+      "date": "2025-10-07",
+      "holdingId": "h001",
+      "targetName": "贵州茅台 (600519)",
+      "type": "buy",
+      "shares": 200,
+      "price": 2555.3546,
+      "fee": 153.32,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0014",
+      "date": "2025-10-14",
+      "holdingId": "h002",
+      "targetName": "宁德时代 (300750)",
+      "type": "buy",
+      "shares": 100,
+      "price": 210.0571,
+      "fee": 6.3,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0081",
+      "date": "2025-10-19",
+      "holdingId": "h011",
+      "targetName": "腾讯控股 (00700)",
+      "type": "buy",
+      "shares": 30,
+      "price": 569.8721,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0019",
+      "date": "2025-10-20",
+      "holdingId": "h003",
+      "targetName": "招商银行 (600036)",
+      "type": "buy",
+      "shares": 500,
+      "price": 30.1615,
+      "fee": 5.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0020",
+      "date": "2025-10-30",
+      "holdingId": "h003",
+      "targetName": "招商银行 (600036)",
+      "type": "buy",
+      "shares": 300,
+      "price": 29.9456,
+      "fee": 5.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0047",
+      "date": "2025-10-30",
+      "holdingId": "h006",
+      "targetName": "沪深300ETF (510300)",
+      "type": "sell",
+      "shares": 200,
+      "price": 3.9592,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0042",
+      "date": "2025-11-15",
+      "holdingId": "h006",
+      "targetName": "沪深300ETF (510300)",
+      "type": "buy",
+      "shares": 400,
+      "price": 3.9403,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0073",
+      "date": "2025-11-15",
+      "holdingId": "h010",
+      "targetName": "富国天惠成长 (161005)",
+      "type": "buy",
+      "shares": 200,
+      "price": 1.2788,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0099",
+      "date": "2025-11-18",
+      "holdingId": "h013",
+      "targetName": "苹果公司 (AAPL)",
+      "type": "buy",
+      "shares": 30,
+      "price": 309.5122,
+      "fee": 0.0,
+      "currency": "USD"
+    },
+    {
+      "id": "tx0095",
+      "date": "2025-11-21",
+      "holdingId": "h012",
+      "targetName": "阿里巴巴 (09988)",
+      "type": "sell",
+      "shares": 10,
+      "price": 121.9695,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0024",
+      "date": "2025-11-24",
+      "holdingId": "h004",
+      "targetName": "长江电力 (600900)",
+      "type": "buy",
+      "shares": 600,
+      "price": 31.9385,
+      "fee": 5.75,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0105",
+      "date": "2025-11-24",
+      "holdingId": "h013",
+      "targetName": "苹果公司 (AAPL)",
+      "type": "sell",
+      "shares": 30,
+      "price": 303.0787,
+      "fee": 0.0,
+      "currency": "USD"
+    },
+    {
+      "id": "tx0082",
+      "date": "2025-11-26",
+      "holdingId": "h011",
+      "targetName": "腾讯控股 (00700)",
+      "type": "buy",
+      "shares": 60,
+      "price": 582.7666,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0027",
+      "date": "2025-12-03",
+      "holdingId": "h004",
+      "targetName": "长江电力 (600900)",
+      "type": "sell",
+      "shares": 200,
+      "price": 30.6984,
+      "fee": 5.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0074",
+      "date": "2025-12-09",
+      "holdingId": "h010",
+      "targetName": "富国天惠成长 (161005)",
+      "type": "buy",
+      "shares": 400,
+      "price": 1.3875,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0032",
+      "date": "2025-12-10",
+      "holdingId": "h005",
+      "targetName": "万华化学 (600309)",
+      "type": "buy",
+      "shares": 300,
+      "price": 69.9121,
+      "fee": 6.29,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0058",
+      "date": "2025-12-13",
+      "holdingId": "h008",
+      "targetName": "红利低波ETF (512890)",
+      "type": "buy",
+      "shares": 100,
+      "price": 1.5829,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0065",
+      "date": "2025-12-22",
+      "holdingId": "h009",
+      "targetName": "易方达蓝筹精选 (005827)",
+      "type": "sell",
+      "shares": 100,
+      "price": 1.3839,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0050",
+      "date": "2025-12-25",
+      "holdingId": "h007",
+      "targetName": "科创50ETF (588000)",
+      "type": "buy",
+      "shares": 500,
+      "price": 1.1074,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0083",
+      "date": "2025-12-30",
+      "holdingId": "h011",
+      "targetName": "腾讯控股 (00700)",
+      "type": "buy",
+      "shares": 10,
+      "price": 562.6487,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0090",
+      "date": "2026-01-09",
+      "holdingId": "h012",
+      "targetName": "阿里巴巴 (09988)",
+      "type": "buy",
+      "shares": 30,
+      "price": 90.1005,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0033",
+      "date": "2026-01-16",
+      "holdingId": "h005",
+      "targetName": "万华化学 (600309)",
+      "type": "buy",
+      "shares": 100,
+      "price": 75.754,
+      "fee": 5.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0100",
+      "date": "2026-01-20",
+      "holdingId": "h013",
+      "targetName": "苹果公司 (AAPL)",
+      "type": "buy",
+      "shares": 10,
+      "price": 276.274,
+      "fee": 0.0,
+      "currency": "USD"
+    },
+    {
+      "id": "tx0015",
+      "date": "2026-01-23",
+      "holdingId": "h002",
+      "targetName": "宁德时代 (300750)",
+      "type": "buy",
+      "shares": 600,
+      "price": 339.7538,
+      "fee": 61.16,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0025",
+      "date": "2026-01-24",
+      "holdingId": "h004",
+      "targetName": "长江电力 (600900)",
+      "type": "buy",
+      "shares": 500,
+      "price": 29.9348,
+      "fee": 5.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0086",
+      "date": "2026-02-03",
+      "holdingId": "h011",
+      "targetName": "腾讯控股 (00700)",
+      "type": "sell",
+      "shares": 30,
+      "price": 572.5893,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0091",
+      "date": "2026-02-03",
+      "holdingId": "h012",
+      "targetName": "阿里巴巴 (09988)",
+      "type": "buy",
+      "shares": 40,
+      "price": 99.6021,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0101",
+      "date": "2026-02-07",
+      "holdingId": "h013",
+      "targetName": "苹果公司 (AAPL)",
+      "type": "buy",
+      "shares": 20,
+      "price": 305.7874,
+      "fee": 0.0,
+      "currency": "USD"
+    },
+    {
+      "id": "tx0028",
+      "date": "2026-02-10",
+      "holdingId": "h004",
+      "targetName": "长江电力 (600900)",
+      "type": "sell",
+      "shares": 100,
+      "price": 30.995,
+      "fee": 5.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0026",
+      "date": "2026-03-02",
+      "holdingId": "h004",
+      "targetName": "长江电力 (600900)",
+      "type": "buy",
+      "shares": 200,
+      "price": 30.2372,
+      "fee": 5.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0092",
+      "date": "2026-03-07",
+      "holdingId": "h012",
+      "targetName": "阿里巴巴 (09988)",
+      "type": "buy",
+      "shares": 30,
+      "price": 103.5528,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0051",
+      "date": "2026-03-09",
+      "holdingId": "h007",
+      "targetName": "科创50ETF (588000)",
+      "type": "buy",
+      "shares": 400,
+      "price": 1.4632,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0043",
+      "date": "2026-03-11",
+      "holdingId": "h006",
+      "targetName": "沪深300ETF (510300)",
+      "type": "buy",
+      "shares": 500,
+      "price": 3.8761,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0052",
+      "date": "2026-03-16",
+      "holdingId": "h007",
+      "targetName": "科创50ETF (588000)",
+      "type": "buy",
+      "shares": 300,
+      "price": 1.4017,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0044",
+      "date": "2026-03-22",
+      "holdingId": "h006",
+      "targetName": "沪深300ETF (510300)",
+      "type": "buy",
+      "shares": 500,
+      "price": 3.8003,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0075",
+      "date": "2026-03-28",
+      "holdingId": "h010",
+      "targetName": "富国天惠成长 (161005)",
+      "type": "buy",
+      "shares": 300,
+      "price": 1.5308,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0053",
+      "date": "2026-04-10",
+      "holdingId": "h007",
+      "targetName": "科创50ETF (588000)",
+      "type": "buy",
+      "shares": 400,
+      "price": 1.2337,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0084",
+      "date": "2026-04-10",
+      "holdingId": "h011",
+      "targetName": "腾讯控股 (00700)",
+      "type": "buy",
+      "shares": 10,
+      "price": 527.2692,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0059",
+      "date": "2026-05-04",
+      "holdingId": "h008",
+      "targetName": "红利低波ETF (512890)",
+      "type": "buy",
+      "shares": 300,
+      "price": 1.4823,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0076",
+      "date": "2026-05-04",
+      "holdingId": "h010",
+      "targetName": "富国天惠成长 (161005)",
+      "type": "sell",
+      "shares": 100,
+      "price": 1.4035,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0066",
+      "date": "2026-05-14",
+      "holdingId": "h009",
+      "targetName": "易方达蓝筹精选 (005827)",
+      "type": "sell",
+      "shares": 100,
+      "price": 1.7343,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0062",
+      "date": "2026-06-08",
+      "holdingId": "h009",
+      "targetName": "易方达蓝筹精选 (005827)",
+      "type": "buy",
+      "shares": 600,
+      "price": 1.6796,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0102",
+      "date": "2026-06-17",
+      "holdingId": "h013",
+      "targetName": "苹果公司 (AAPL)",
+      "type": "buy",
+      "shares": 40,
+      "price": 225.0921,
+      "fee": 0.0,
+      "currency": "USD"
+    },
+    {
+      "id": "tx0106",
+      "date": "2026-06-25",
+      "holdingId": "h013",
+      "targetName": "苹果公司 (AAPL)",
+      "type": "sell",
+      "shares": 30,
+      "price": 224.68,
+      "fee": 0.0,
+      "currency": "USD"
+    },
+    {
+      "id": "tx0093",
+      "date": "2026-06-26",
+      "holdingId": "h012",
+      "targetName": "阿里巴巴 (09988)",
+      "type": "buy",
+      "shares": 30,
+      "price": 94.2916,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0096",
+      "date": "2026-06-30",
+      "holdingId": "h012",
+      "targetName": "阿里巴巴 (09988)",
+      "type": "sell",
+      "shares": 10,
+      "price": 93.9516,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0034",
+      "date": "2026-07-03",
+      "holdingId": "h005",
+      "targetName": "万华化学 (600309)",
+      "type": "buy",
+      "shares": 100,
+      "price": 65.671,
+      "fee": 5.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0054",
+      "date": "2026-07-04",
+      "holdingId": "h007",
+      "targetName": "科创50ETF (588000)",
+      "type": "buy",
+      "shares": 400,
+      "price": 1.0246,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0035",
+      "date": "2026-07-21",
+      "holdingId": "h005",
+      "targetName": "万华化学 (600309)",
+      "type": "buy",
+      "shares": 100,
+      "price": 63.2722,
+      "fee": 5.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0008",
+      "date": "2026-07-25",
+      "holdingId": "h001",
+      "targetName": "贵州茅台 (600519)",
+      "type": "sell",
+      "shares": 200,
+      "price": 1763.5206,
+      "fee": 105.81,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0109",
+      "date": "2026-07-27",
+      "holdingId": "h014",
+      "targetName": "英伟达 (NVDA)",
+      "type": "buy",
+      "shares": 50,
+      "price": 119.6263,
+      "fee": 0.0,
+      "currency": "USD"
+    },
+    {
+      "id": "tx0045",
+      "date": "2026-08-02",
+      "holdingId": "h006",
+      "targetName": "沪深300ETF (510300)",
+      "type": "buy",
+      "shares": 400,
+      "price": 4.2925,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0009",
+      "date": "2026-08-08",
+      "holdingId": "h001",
+      "targetName": "贵州茅台 (600519)",
+      "type": "sell",
+      "shares": 200,
+      "price": 1674.2305,
+      "fee": 100.45,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0038",
+      "date": "2026-08-21",
+      "holdingId": "h005",
+      "targetName": "万华化学 (600309)",
+      "type": "sell",
+      "shares": 300,
+      "price": 77.0291,
+      "fee": 6.93,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0103",
+      "date": "2026-08-21",
+      "holdingId": "h013",
+      "targetName": "苹果公司 (AAPL)",
+      "type": "buy",
+      "shares": 30,
+      "price": 269.0066,
+      "fee": 0.0,
+      "currency": "USD"
+    },
+    {
+      "id": "tx0046",
+      "date": "2026-08-25",
+      "holdingId": "h006",
+      "targetName": "沪深300ETF (510300)",
+      "type": "buy",
+      "shares": 400,
+      "price": 3.7396,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0110",
+      "date": "2026-08-29",
+      "holdingId": "h014",
+      "targetName": "英伟达 (NVDA)",
+      "type": "buy",
+      "shares": 40,
+      "price": 119.0116,
+      "fee": 0.0,
+      "currency": "USD"
+    },
+    {
+      "id": "tx0036",
+      "date": "2026-09-06",
+      "holdingId": "h005",
+      "targetName": "万华化学 (600309)",
+      "type": "buy",
+      "shares": 500,
+      "price": 85.2953,
+      "fee": 12.79,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0037",
+      "date": "2026-09-09",
+      "holdingId": "h005",
+      "targetName": "万华化学 (600309)",
+      "type": "buy",
+      "shares": 200,
+      "price": 82.3483,
+      "fee": 5.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0085",
+      "date": "2026-09-21",
+      "holdingId": "h011",
+      "targetName": "腾讯控股 (00700)",
+      "type": "sell",
+      "shares": 30,
+      "price": 454.526,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0104",
+      "date": "2026-09-21",
+      "holdingId": "h013",
+      "targetName": "苹果公司 (AAPL)",
+      "type": "buy",
+      "shares": 50,
+      "price": 230.6359,
+      "fee": 0.0,
+      "currency": "USD"
+    },
+    {
+      "id": "tx0063",
+      "date": "2026-09-22",
+      "holdingId": "h009",
+      "targetName": "易方达蓝筹精选 (005827)",
+      "type": "buy",
+      "shares": 100,
+      "price": 1.815,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0094",
+      "date": "2026-09-29",
+      "holdingId": "h012",
+      "targetName": "阿里巴巴 (09988)",
+      "type": "buy",
+      "shares": 30,
+      "price": 124.4977,
+      "fee": 0.0,
+      "currency": "HKD"
+    },
+    {
+      "id": "tx0048",
+      "date": "2026-10-01",
+      "holdingId": "h006",
+      "targetName": "沪深300ETF (510300)",
+      "type": "sell",
+      "shares": 100,
+      "price": 3.7879,
+      "fee": 0.0,
+      "currency": "CNY"
+    },
+    {
+      "id": "tx0111",
+      "date": "2026-10-05",
+      "holdingId": "h014",
+      "targetName": "英伟达 (NVDA)",
+      "type": "buy",
+      "shares": 30,
+      "price": 122.5806,
+      "fee": 0.0,
+      "currency": "USD"
+    },
+    {
+      "id": "tx0064",
+      "date": "2026-10-09",
+      "holdingId": "h009",
+      "targetName": "易方达蓝筹精选 (005827)",
+      "type": "buy",
+      "shares": 300,
+      "price": 1.921,
+      "fee": 0.0,
+      "currency": "CNY"
+    }
+  ],
+  "snapshots": [
+    {
+      "date": "2024-10-31",
+      "totalAsset": 89312.49,
+      "totalCost": 89722.93
+    },
+    {
+      "date": "2024-11-30",
+      "totalAsset": 396435.48,
+      "totalCost": 396277.11
+    },
+    {
+      "date": "2024-12-31",
+      "totalAsset": 945316.15,
+      "totalCost": 935087.91
+    },
+    {
+      "date": "2025-01-31",
+      "totalAsset": 1093369.25,
+      "totalCost": 962579.95
+    },
+    {
+      "date": "2025-02-28",
+      "totalAsset": 1087283.09,
+      "totalCost": 999546.14
+    },
+    {
+      "date": "2025-03-31",
+      "totalAsset": 1236940.75,
+      "totalCost": 1212909.31
+    },
+    {
+      "date": "2025-04-30",
+      "totalAsset": 3092054.02,
+      "totalCost": 3062606.07
+    },
+    {
+      "date": "2025-05-31",
+      "totalAsset": 3084214.64,
+      "totalCost": 3062606.07
+    },
+    {
+      "date": "2025-06-30",
+      "totalAsset": 3169940.09,
+      "totalCost": 3069722.71
+    },
+    {
+      "date": "2025-07-31",
+      "totalAsset": 4699104.34,
+      "totalCost": 3999934.85
+    },
+    {
+      "date": "2025-08-31",
+      "totalAsset": 5430570.44,
+      "totalCost": 4000966.38
+    },
+    {
+      "date": "2025-09-30",
+      "totalAsset": 5695708.18,
+      "totalCost": 4182999.61
+    },
+    {
+      "date": "2025-10-31",
+      "totalAsset": 6374283.98,
+      "totalCost": 4955688.19
+    },
+    {
+      "date": "2025-11-30",
+      "totalAsset": 5915186.1,
+      "totalCost": 5010996.56
+    },
+    {
+      "date": "2025-12-31",
+      "totalAsset": 5982925.08,
+      "totalCost": 5032576.94
+    },
+    {
+      "date": "2026-01-31",
+      "totalAsset": 6077415.19,
+      "totalCost": 5264508.93
+    },
+    {
+      "date": "2026-02-28",
+      "totalAsset": 6666385.27,
+      "totalCost": 5255301.99
+    },
+    {
+      "date": "2026-03-31",
+      "totalAsset": 7073820.78,
+      "totalCost": 5369764.25
+    },
+    {
+      "date": "2026-04-30",
+      "totalAsset": 5960582.96,
+      "totalCost": 5375530.42
+    },
+    {
+      "date": "2026-05-31",
+      "totalAsset": 5821981.85,
+      "totalCost": 5375730.25
+    },
+    {
+      "date": "2026-06-30",
+      "totalAsset": 5749428.38,
+      "totalCost": 5529231.33
+    },
+    {
+      "date": "2026-07-31",
+      "totalAsset": 5204490.66,
+      "totalCost": 5160954.89
+    },
+    {
+      "date": "2026-08-31",
+      "totalAsset": 4794378.87,
+      "totalCost": 4849589.06
+    },
+    {
+      "date": "2026-09-30",
+      "totalAsset": 4792533.48,
+      "totalCost": 4907947.11
+    },
+    {
+      "date": "2026-10-16",
+      "totalAsset": 4705741.37,
+      "totalCost": 4911814.8
+    }
+  ],
+  "aipPlans": [
+    {
+      "id": "aip1",
+      "name": "沪深300ETF 周定投",
+      "holdingId": "h006",
+      "targetName": "沪深300ETF (510300)",
+      "cycle": "weekly",
+      "deductDay": 1,
+      "amount": 1000,
+      "lastDeductDate": "2026-10-12",
+      "totalInvested": 52000
+    },
+    {
+      "id": "aip2",
+      "name": "易方达蓝筹精选 月定投",
+      "holdingId": "h009",
+      "targetName": "易方达蓝筹精选 (005827)",
+      "cycle": "monthly",
+      "deductDay": 10,
+      "amount": 2000,
+      "lastDeductDate": "2026-09-04",
+      "totalInvested": 48000
+    }
+  ],
+  "riskProfile": {
+    "score": 22,
+    "type": "积极型",
+    "targetEquity": 60,
+    "targetFixed": 40,
+    "answers": [
+      4,
+      4,
+      4,
+      4,
+      3,
+      3
+    ]
+  },
+  "goals": [
+    {
+      "id": "g1",
+      "name": "三年后换车首付",
+      "targetAmount": 300000,
+      "targetDate": "2029-10-15",
+      "notes": "增程 SUV 首付预算"
+    },
+    {
+      "id": "g2",
+      "name": "十年养老储备",
+      "targetAmount": 2000000,
+      "targetDate": "2036-10-13",
+      "notes": "长期复利目标"
+    }
+  ]
+};
+    function loadPressureData() {
+      appData = Object.assign({}, defaultData, JSON.parse(JSON.stringify(PRESSURE_DATA)));
+      saveToStorage();
+      updateRatesHeader();
+      if (typeof renderAll === 'function') renderAll();
+      showToast('压力测试数据已载入');
+    }
     function loadSampleData() {
       const today = new Date();
       const formatDate = (d) => d.toISOString().slice(0, 10);
