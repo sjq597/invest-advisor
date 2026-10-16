@@ -1,0 +1,45 @@
+name: Release
+
+# 打 tag 即发版：git tag v2.2.0 && git push origin v2.2.0
+# 自动：创建 GitHub Release（附 index.html）+ 部署到 GitHub Pages
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 准备发布物
+        run: |
+          mkdir -p dist
+          cp index.html dist/index.html
+          ls -lh dist/
+
+      - name: 创建 GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/index.html
+          generate_release_notes: true
+
+      - name: 上传 Pages 产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy-pages:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

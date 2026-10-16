@@ -1,0 +1,13 @@
+node_modules/
+*.log
+.DS_Store
+# 生成物（可由 index.html 重建，不入库）
+index-demo.html
+index-link.html
+index-*-bak.html
+# 构建脚本已用完的一次性文件保留在本地，不入库
+build_*.py
+builder.py
+generator.py
+test_*.py
+test_*.js
