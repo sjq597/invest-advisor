@@ -1,0 +1,3665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>个人投资理财顾问</title>
+  <style>
+    :root {
+      --bg-primary: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --primary: #2563eb;
+      --primary-light: #eff6ff;
+      --up-red: #dc2626;
+      --up-red-bg: #fef2f2;
+      --down-green: #16a34a;
+      --down-green-bg: #f0fdf4;
+      --warn-yellow: #d97706;
+      --warn-bg: #fffbeb;
+      --radius: 12px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding-bottom: 74px;
+      min-height: 100vh;
+    }
+    /* 顶部导航 */
+    header.app-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header-rates {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: var(--bg-primary);
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+    }
+    /* 主容器 */
+    main.container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    /* 模块视图切换 */
+    .tab-view {
+      display: none;
+      animation: fadeIn 0.15s ease-in-out;
+    }
+    .tab-view.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* 卡片与组件通用样式 */
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    /* 总览顶部看板 */
+    .stat-banner {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+    }
+    .stat-banner-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .stat-banner-label {
+      font-size: 0.8125rem;
+      color: #94a3b8;
+    }
+    .stat-banner-main {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .stat-banner-sub {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      margin-bottom: 14px;
+    }
+    .stats-trio {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      text-align: center;
+    }
+    .stats-trio-item {
+      background: rgba(255, 255, 255, 0.06);
+      padding: 10px 8px;
+      border-radius: 8px;
+    }
+    .stats-trio-label {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      margin-bottom: 4px;
+    }
+    .stats-trio-val {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+    /* 图例列表 */
+    .donut-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .donut-legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8125rem;
+      padding: 4px 0;
+    }
+    .donut-legend-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .donut-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    /* 按钮通用 */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+    .btn-outline {
+      background: #fff;
+      border-color: var(--border-color);
+      color: var(--text-main);
+    }
+    .btn-outline:hover {
+      background: var(--bg-primary);
+    }
+    .btn-danger {
+      background: var(--up-red-bg);
+      border-color: #fca5a5;
+      color: var(--up-red);
+    }
+    .btn-danger:hover {
+      background: #fee2e2;
+    }
+    .btn-sm {
+      padding: 4px 8px;
+      font-size: 0.75rem;
+      border-radius: 6px;
+    }
+    /* 颜色类（红涨绿跌） */
+    .text-up { color: var(--up-red) !important; }
+    .text-down { color: var(--down-green) !important; }
+    .text-muted { color: var(--text-muted) !important; }
+    .bg-up { background-color: var(--up-red-bg); }
+    .bg-down { background-color: var(--down-green-bg); }
+    .badge {
+      display: inline-block;
+      padding: 2px 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      border-radius: 4px;
+    }
+    .badge-warn {
+      background: var(--warn-bg);
+      color: var(--warn-yellow);
+      border: 1px solid #fde68a;
+    }
+    .badge-tag {
+      background: var(--bg-primary);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .category-badge {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+    .cat-a_stock { background: #fee2e2; color: #b91c1c; }
+    .cat-etf_lof { background: #e0e7ff; color: #4338ca; }
+    .cat-mutual_fund { background: #fef3c7; color: #b45309; }
+    .cat-bank_wealth { background: #dcfce7; color: #15803d; }
+    .cat-hk_us_stock { background: #f3e8ff; color: #7e22ce; }
+    .cat-deposit { background: #e0f2fe; color: #0369a1; }
+    .cat-cash { background: #f1f5f9; color: #475569; }
+
+    /* 表格与响应式卡片 */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      text-align: left;
+    }
+    table.data-table th, table.data-table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+    table.data-table th {
+      color: var(--text-muted);
+      font-weight: 600;
+      background: #fafafa;
+    }
+    .holding-card {
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .holding-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .holding-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .holding-code {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: normal;
+    }
+    .holding-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px 12px;
+      font-size: 0.75rem;
+      background: var(--bg-primary);
+      padding: 8px 10px;
+      border-radius: 6px;
+    }
+    @media (max-width: 480px) {
+      .holding-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .stat-banner-main {
+        font-size: 1.65rem;
+      }
+      .stats-trio {
+        gap: 6px;
+      }
+      .stats-trio-val {
+        font-size: 0.8125rem;
+      }
+      main.container {
+        padding: 12px 10px;
+      }
+    }
+    .holding-grid-item span:first-child {
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 1px;
+    }
+    .holding-grid-item span:last-child {
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .holding-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    /* 底部导航栏 */
+    nav.bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 6px 4px 8px 4px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      padding: 4px 2px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: color 0.15s;
+    }
+    .nav-item.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .nav-icon {
+      font-size: 1.15rem;
+      line-height: 1.2;
+      margin-bottom: 2px;
+    }
+    .nav-label {
+      font-size: 0.68rem;
+    }
+    /* 空状态提示 */
+    .empty-state {
+      text-align: center;
+      padding: 40px 16px;
+      color: var(--text-muted);
+    }
+    .empty-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+    /* 模态框通用 */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(2px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.hidden { display: none; }
+    .modal-content {
+      background: #fff;
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 20px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    .form-group {
+      margin-bottom: 12px;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .form-input, .form-select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      background: #fff;
+      color: var(--text-main);
+      outline: none;
+    }
+    .form-input:focus, .form-select:focus {
+      border-color: var(--primary);
+    }
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+    .form-row .form-group {
+      flex: 1;
+    }
+    /* 提示 Toast */
+    #toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.9);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8125rem;
+      z-index: 200;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translate(-50%, 8px);
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部栏 -->
+  <header class="app-header">
+    <div class="header-title">
+      <span>📈</span> 个人投资顾问
+    </div>
+    <div class="header-rates" id="headerRates">
+      USD: <span id="rateUSD">7.20</span> | HKD: <span id="rateHKD">0.92</span>
+    </div>
+  </header>
+
+  <!-- 主体视图容器 -->
+  <main class="container">
+    <!-- 模块1：总览 -->
+    <section id="view-overview" class="tab-view active">
+      <div id="overview-content">
+        <div class="empty-state">
+          <div class="empty-icon">📊</div>
+          <h3>暂无资产数据</h3>
+          <p style="margin: 8px 0 16px;">请在设置中载入示例数据，或前往持仓页添加第一笔资产。</p>
+          <button class="btn btn-primary" onclick="loadSampleData()">载入示例数据体验</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 模块2：持仓 -->
+    <section id="view-holdings" class="tab-view">
+      <div id="holdings-content">
+        <div class="card-header" style="flex-wrap:wrap; gap:8px;">
+          <h2 class="card-title">💼 持仓管理</h2>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-outline btn-sm" onclick="openBatchPriceModal()">⚡ 批量改价</button>
+            <button class="btn btn-primary btn-sm" onclick="openAddHoldingModal()">+ 新增持仓</button>
+          </div>
+        </div>
+        <!-- 持仓品类筛选快捷栏 -->
+        <div id="holding-filter-bar" style="display:flex; gap:6px; overflow-x:auto; padding-bottom:8px; margin-bottom:8px;">
+          <button class="btn btn-sm btn-outline active" data-filter="all" onclick="filterHoldings('all', this)">全部</button>
+          <button class="btn btn-sm btn-outline" data-filter="a_stock" onclick="filterHoldings('a_stock', this)">A股</button>
+          <button class="btn btn-sm btn-outline" data-filter="etf_lof" onclick="filterHoldings('etf_lof', this)">场内基金</button>
+          <button class="btn btn-sm btn-outline" data-filter="mutual_fund" onclick="filterHoldings('mutual_fund', this)">场外基金</button>
+          <button class="btn btn-sm btn-outline" data-filter="hk_us_stock" onclick="filterHoldings('hk_us_stock', this)">港美股</button>
+          <button class="btn btn-sm btn-outline" data-filter="bank_wealth" onclick="filterHoldings('bank_wealth', this)">银行理财</button>
+          <button class="btn btn-sm btn-outline" data-filter="deposit" onclick="filterHoldings('deposit', this)">存款</button>
+          <button class="btn btn-sm btn-outline" data-filter="cash" onclick="filterHoldings('cash', this)">现金</button>
+        </div>
+        <div id="holdings-list-container"></div>
+      </div>
+    </section>
+
+    <!-- 模块3：流水 -->
+    <section id="view-transactions" class="tab-view">
+      <div id="transactions-content">
+        <div class="card-header" style="flex-wrap:wrap; gap:8px;">
+          <h2 class="card-title">🧾 交易流水</h2>
+          <button class="btn btn-primary btn-sm" onclick="openAddTxModal()">+ 记一笔买卖</button>
+        </div>
+        <!-- 交易流水筛选栏 -->
+        <div class="card" style="padding:10px 14px; margin-bottom:12px;">
+          <div class="form-row" style="margin-bottom:0;">
+            <div class="form-group" style="margin-bottom:0;">
+              <select id="txFilterType" class="form-select" onchange="renderTransactions()" style="padding:6px 10px; font-size:0.8125rem;">
+                <option value="all">全部类型 (买入/卖出)</option>
+                <option value="buy">仅看买入</option>
+                <option value="sell">仅看卖出</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <input type="text" id="txFilterTarget" class="form-input" placeholder="按标的名称/代码过滤..." oninput="renderTransactions()" style="padding:6px 10px; font-size:0.8125rem;">
+            </div>
+          </div>
+        </div>
+        <div id="transactions-list-container"></div>
+      </div>
+    </section>
+
+    <!-- 模块4：收益 -->
+    <section id="view-performance" class="tab-view">
+      <div id="performance-content">
+        <h2 class="card-title" style="margin-bottom:12px;">收益分析</h2>
+        <div id="performance-container"></div>
+      </div>
+    </section>
+
+    <!-- 模块5：定投 -->
+    <section id="view-aip" class="tab-view">
+      <div id="aip-content">
+        <div class="card-header">
+          <h2 class="card-title">定投计划</h2>
+          <button class="btn btn-primary btn-sm" onclick="openAddAipModal()">+ 新建定投</button>
+        </div>
+        <div id="aip-list-container"></div>
+      </div>
+    </section>
+
+    <!-- 模块6：配置 -->
+    <section id="view-allocation" class="tab-view">
+      <div id="allocation-content">
+        <h2 class="card-title" style="margin-bottom:12px;">资产配置建议</h2>
+        <div id="allocation-container"></div>
+      </div>
+    </section>
+
+    <!-- 模块7：目标 -->
+    <section id="view-goals" class="tab-view">
+      <div id="goals-content">
+        <div class="card-header">
+          <h2 class="card-title">财务目标</h2>
+          <button class="btn btn-primary btn-sm" onclick="openAddGoalModal()">+ 新增目标</button>
+        </div>
+        <div id="goals-list-container"></div>
+      </div>
+    </section>
+
+    <!-- 设置页 -->
+    <section id="view-settings" class="tab-view">
+      <div class="card">
+        <h3 class="card-title" style="margin-bottom:16px;">⚙️ 汇率设置（手动折算人民币）</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">USD → CNY 汇率</label>
+            <input type="number" step="0.0001" id="settingUsdRate" class="form-input" value="7.20">
+          </div>
+          <div class="form-group">
+            <label class="form-label">HKD → CNY 汇率</label>
+            <input type="number" step="0.0001" id="settingHkdRate" class="form-input" value="0.92">
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="saveRates()">保存汇率</button>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title" style="margin-bottom:16px;">💾 数据备份与恢复</h3>
+        <p class="text-muted" style="font-size:0.8125rem; margin-bottom:12px;">数据保存在浏览器本地（localStorage），清空浏览器缓存可能会丢失，请定期导出备份。</p>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-outline" onclick="exportDataJSON()">导出 JSON 备份</button>
+          <label class="btn btn-outline" style="cursor:pointer; margin-bottom:0;">
+            导入 JSON 恢复
+            <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importDataJSON(event)">
+          </label>
+          <button class="btn btn-primary" onclick="loadSampleData()">载入示例数据</button>
+          <button class="btn btn-danger" onclick="clearAllData()">清空所有数据</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title" style="margin-bottom:8px;">ℹ️ 关于</h3>
+        <p class="text-muted" style="font-size:0.8125rem;">
+          个人单机版投资顾问。纯原生前端实现，零第三方依赖，离线可用。<br>
+          遵循中国投资者习惯：红涨绿跌。银行理财/存款按单利估算现值。
+        </p>
+      </div>
+    </section>
+
+    <!-- 持仓新增/编辑模态框 -->
+    <div id="holdingModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <div class="card-header">
+          <h3 class="card-title" id="holdingModalTitle">新增持仓</h3>
+          <button class="btn btn-outline btn-sm" onclick="closeHoldingModal()">✕</button>
+        </div>
+        <form id="holdingForm" onsubmit="handleHoldingSubmit(event)">
+          <input type="hidden" id="hFormId" value="">
+          
+          <div class="form-group">
+            <label class="form-label">资产品类 *</label>
+            <select id="hFormCategory" class="form-select" onchange="onCategoryChange(this.value)" required>
+              <option value="a_stock">A股 (股票)</option>
+              <option value="etf_lof">场内基金 (ETF/LOF)</option>
+              <option value="mutual_fund">场外基金 (公募)</option>
+              <option value="hk_us_stock">港美股 (港股/美股)</option>
+              <option value="bank_wealth">银行理财</option>
+              <option value="deposit">存款 (定期/大额存单)</option>
+              <option value="cash">现金 (活期/货币基金)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">资产/产品名称 *</label>
+            <input type="text" id="hFormName" class="form-input" placeholder="例如：贵州茅台 / 沪深300ETF" required>
+          </div>
+
+          <!-- 市场化标的字段 (股票/基金/港美股) -->
+          <div id="fieldsMarket">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">代码</label>
+                <input type="text" id="hFormCode" class="form-input" placeholder="例如：600519 / AAPL">
+              </div>
+              <div class="form-group">
+                <label class="form-label">计价币种 *</label>
+                <select id="hFormCurrency" class="form-select">
+                  <option value="CNY">人民币 (CNY)</option>
+                  <option value="HKD">港币 (HKD)</option>
+                  <option value="USD">美元 (USD)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">持仓数量/份额 *</label>
+                <input type="number" step="any" id="hFormShares" class="form-input" placeholder="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">成本价 (原币种) *</label>
+                <input type="number" step="any" id="hFormCostPrice" class="form-input" placeholder="0.00">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">当前价 (原币种) *</label>
+              <input type="number" step="any" id="hFormCurrentPrice" class="form-input" placeholder="0.00">
+            </div>
+          </div>
+
+          <!-- 固定收益标的字段 (银行理财/存款) -->
+          <div id="fieldsFixed" style="display:none;">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">本金金额 (CNY) *</label>
+                <input type="number" step="any" id="hFormPrincipal" class="form-input" placeholder="100000">
+              </div>
+              <div class="form-group">
+                <label class="form-label">年化收益率 (%) *</label>
+                <input type="number" step="0.01" id="hFormAnnualRate" class="form-input" placeholder="3.20">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">起息日 *</label>
+                <input type="date" id="hFormStartDate" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label">到期日 *</label>
+                <input type="date" id="hFormEndDate" class="form-input">
+              </div>
+            </div>
+            <p class="text-muted" style="font-size:0.75rem; margin-top:2px;">* 现值将根据起息日至今的持有天数，按单利公式估算本息展示。</p>
+          </div>
+
+          <!-- 现金字段 -->
+          <div id="fieldsCash" style="display:none;">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">现金币种 *</label>
+                <select id="hFormCashCurrency" class="form-select">
+                  <option value="CNY">人民币 (CNY)</option>
+                  <option value="USD">美元 (USD)</option>
+                  <option value="HKD">港币 (HKD)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">金额 (原币种) *</label>
+                <input type="number" step="any" id="hFormAmount" class="form-input" placeholder="10000.00">
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+            <button type="button" class="btn btn-outline" onclick="closeHoldingModal()">取消</button>
+            <button type="submit" class="btn btn-primary">保存持仓</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 批量改价模态框 -->
+    <div id="batchPriceModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <div class="card-header">
+          <h3 class="card-title">⚡ 批量更新当前价</h3>
+          <button class="btn btn-outline btn-sm" onclick="closeBatchPriceModal()">✕</button>
+        </div>
+        <p class="text-muted" style="font-size:0.8125rem; margin-bottom:12px;">
+          因为无实时自动行情，可在此逐行修改各股票与基金的最新行情价，一键保存。
+        </p>
+        <div id="batchPriceList" style="max-height:360px; overflow-y:auto; margin-bottom:16px;"></div>
+        <div style="display:flex; justify-content:flex-end; gap:8px;">
+          <button type="button" class="btn btn-outline" onclick="closeBatchPriceModal()">取消</button>
+          <button type="button" class="btn btn-primary" onclick="saveBatchPrices()">一键更新保存</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 记流水模态框 -->
+    <div id="txModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <div class="card-header">
+          <h3 class="card-title">🧾 记录交易流水</h3>
+          <button class="btn btn-outline btn-sm" onclick="closeAddTxModal()">✕</button>
+        </div>
+        <form id="txForm" onsubmit="handleTxSubmit(event)">
+          <div class="form-group">
+            <label class="form-label">选择关联持仓或新建标的 *</label>
+            <select id="txFormHoldingSelect" class="form-select" onchange="onTxHoldingSelectChange(this.value)">
+              <!-- 动态填充持仓列表，加一项“手动输入新标的” -->
+            </select>
+          </div>
+
+          <div id="txManualTargetFields" style="display:none; background:var(--bg-primary); padding:10px; border-radius:8px; margin-bottom:12px;">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">标的名称 *</label>
+                <input type="text" id="txManualName" class="form-input" placeholder="例如：宁德时代">
+              </div>
+              <div class="form-group">
+                <label class="form-label">品类 *</label>
+                <select id="txManualCategory" class="form-select">
+                  <option value="a_stock">A股</option>
+                  <option value="etf_lof">场内基金</option>
+                  <option value="mutual_fund">场外基金</option>
+                  <option value="hk_us_stock">港美股</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">代码</label>
+                <input type="text" id="txManualCode" class="form-input" placeholder="例如：300750">
+              </div>
+              <div class="form-group">
+                <label class="form-label">币种</label>
+                <select id="txManualCurrency" class="form-select">
+                  <option value="CNY">CNY</option>
+                  <option value="HKD">HKD</option>
+                  <option value="USD">USD</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">交易类型 *</label>
+              <select id="txFormType" class="form-select" onchange="updateTxCalcPreview()">
+                <option value="buy">买入 / 建仓 / 加仓</option>
+                <option value="sell">卖出 / 减仓 / 清仓</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">交易日期 *</label>
+              <input type="date" id="txFormDate" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">成交数量/份额 *</label>
+              <input type="number" step="any" id="txFormShares" class="form-input" placeholder="0" required oninput="updateTxCalcPreview()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">成交单价 (原币) *</label>
+              <input type="number" step="any" id="txFormPrice" class="form-input" placeholder="0.00" required oninput="updateTxCalcPreview()">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">手续费/佣金 (原币)</label>
+              <input type="number" step="any" id="txFormFee" class="form-input" value="0.00" oninput="updateTxCalcPreview()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">发生总金额 (原币)</label>
+              <input type="text" id="txFormTotalPreview" class="form-input" readonly style="background:#f1f5f9; color:var(--text-main); font-weight:600;">
+            </div>
+          </div>
+
+          <div style="background:var(--primary-light); padding:10px 12px; border-radius:8px; margin-top:8px; font-size:0.75rem; color:#1e40af;">
+            💡 <strong>自动更新持仓规则：</strong><br>
+            • 买入：自动按加权平均法更新持仓成本价，并增加持仓份额。<br>
+            • 卖出：自动扣减持仓数量，并计算本次卖出的实现盈亏。
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+            <button type="button" class="btn btn-outline" onclick="closeAddTxModal()">取消</button>
+            <button type="submit" class="btn btn-primary">确认并记入持仓</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 定投计划新建/编辑模态框 -->
+    <div id="aipModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <div class="card-header">
+          <h3 class="card-title" id="aipModalTitle">新建定投计划</h3>
+          <button class="btn btn-outline btn-sm" onclick="closeAipModal()">✕</button>
+        </div>
+        <form id="aipForm" onsubmit="handleAipSubmit(event)">
+          <input type="hidden" id="aipFormId" value="">
+          <div class="form-group">
+            <label class="form-label">定投计划名称 *</label>
+            <input type="text" id="aipFormName" class="form-input" placeholder="例如：沪深300指数周定投" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">关联持仓标的 *</label>
+            <select id="aipFormHoldingSelect" class="form-select" required>
+              <!-- 动态填充 -->
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">定投周期 *</label>
+              <select id="aipFormCycle" class="form-select" onchange="onAipCycleChange(this.value)">
+                <option value="weekly">每周定投</option>
+                <option value="monthly">每月定投</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">扣款日 *</label>
+              <select id="aipFormDeductDay" class="form-select">
+                <!-- 动态填充周几或每月几号 -->
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">每期定投金额 (CNY) *</label>
+            <input type="number" step="any" id="aipFormAmount" class="form-input" placeholder="例如：1000.00" required>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+            <button type="button" class="btn btn-outline" onclick="closeAipModal()">取消</button>
+            <button type="submit" class="btn btn-primary">保存定投计划</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 确认定投扣款模态框 -->
+    <div id="aipDeductModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <div class="card-header">
+          <h3 class="card-title">⚡ 确认定投扣款</h3>
+          <button class="btn btn-outline btn-sm" onclick="closeAipDeductModal()">✕</button>
+        </div>
+        <form id="aipDeductForm" onsubmit="handleAipDeductSubmit(event)">
+          <input type="hidden" id="deductPlanId" value="">
+          <div style="background:var(--bg-primary); padding:12px; border-radius:8px; margin-bottom:12px;">
+            <div style="font-weight:700; font-size:1rem;" id="deductPlanName">-</div>
+            <div class="text-muted" style="font-size:0.8125rem;" id="deductPlanTarget">-</div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">扣款日期 *</label>
+              <input type="date" id="deductDate" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">扣款金额 (CNY) *</label>
+              <input type="number" step="any" id="deductAmount" class="form-input" required oninput="updateAipDeductSharesPreview()">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">执行成交单价 (原币) *</label>
+              <input type="number" step="any" id="deductPrice" class="form-input" required oninput="updateAipDeductSharesPreview()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">预估买入份额</label>
+              <input type="text" id="deductSharesPreview" class="form-input" readonly style="background:#f1f5f9; font-weight:700;">
+            </div>
+          </div>
+          <p class="text-muted" style="font-size:0.75rem; margin-top:2px;">
+            💡 确认后将自动生成一条买入交易流水，并按加权平均法更新持仓数量与成本价。
+          </p>
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+            <button type="button" class="btn btn-outline" onclick="closeAipDeductModal()">取消</button>
+            <button type="submit" class="btn btn-primary">确认扣款入账</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 风险测评问卷模态框 -->
+    <div id="riskModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <div class="card-header">
+          <h3 class="card-title">📝 投资者风险偏好问卷 (6题)</h3>
+          <button class="btn btn-outline btn-sm" onclick="closeRiskModal()">✕</button>
+        </div>
+        <form id="riskForm" onsubmit="handleRiskSubmit(event)">
+          <div class="form-group">
+            <label class="form-label">1. 您的年龄处于哪个阶段？</label>
+            <select id="riskQ1" class="form-select" required>
+              <option value="4">18 ~ 34 岁（年轻有拼劲）</option>
+              <option value="3" selected>35 ~ 49 岁（事业成熟期）</option>
+              <option value="2">50 ~ 60 岁（临近退休期）</option>
+              <option value="1">60 岁以上（平稳养老期）</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">2. 您的投资经验与年限？</label>
+            <select id="riskQ2" class="form-select" required>
+              <option value="1">几乎没有投资经验，以活期银行储蓄为主</option>
+              <option value="2">1 ~ 3 年，主要购买低风险银行理财或货币基金</option>
+              <option value="3" selected>3 ~ 5 年，有买卖公募基金与股票的实际经验</option>
+              <option value="4">5 年以上，经历过完整牛熊周期，熟悉全品类配置</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">3. 投资组合出现亏损时，您能承受的最大回撤？</label>
+            <select id="riskQ3" class="form-select" required>
+              <option value="1">不能承受任何亏损，本金必须绝对安全</option>
+              <option value="2">最多承受 5% 以内的短期小幅回撤</option>
+              <option value="3" selected>能承受 10% ~ 20% 的阶段性浮亏以追求超额收益</option>
+              <option value="4">能承受 30% 以上的剧烈剧动，注重长期高复合回报</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">4. 您的该笔投资资金预计持有期限？</label>
+            <select id="riskQ4" class="form-select" required>
+              <option value="1">1 年以内，随时可能需要资金周转</option>
+              <option value="2">1 ~ 3 年的中短期规划</option>
+              <option value="3">3 ~ 5 年的中长期资金</option>
+              <option value="4" selected>5 年以上，完全不会动用的长期闲置资金</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">5. 您的主要收入稳定性与家庭现金流情况？</label>
+            <select id="riskQ5" class="form-select" required>
+              <option value="1">收入不稳定，日常开销或负债压力较大</option>
+              <option value="2">收入基本平稳，结余有限但无过多负债</option>
+              <option value="3" selected>收入持续稳定且有规律结余，抗风险能力良好</option>
+              <option value="4">收入丰厚充裕，家庭资产雄厚无后顾之忧</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">6. 您的投资金融认知与面对波动的心理承受力？</label>
+            <select id="riskQ6" class="form-select" required>
+              <option value="1">认知较浅，市场大幅震荡时极度焦虑想割肉</option>
+              <option value="2">了解基本原理，面对账户亏损时仍感到担忧</option>
+              <option value="3" selected>深谙均值回归原理，能坦然接受周期涨跌并坚持纪律</option>
+              <option value="4">具备成熟的逆向投资框架，将市场深度回调视作黄金捡筹机会</option>
+            </select>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+            <button type="button" class="btn btn-outline" onclick="closeRiskModal()">取消</button>
+            <button type="submit" class="btn btn-primary">提交测评并计算建议</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 财务目标新增/编辑模态框 -->
+    <div id="goalModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <div class="card-header">
+          <h3 class="card-title" id="goalModalTitle">新增财务目标</h3>
+          <button class="btn btn-outline btn-sm" onclick="closeGoalModal()">✕</button>
+        </div>
+        <form id="goalForm" onsubmit="handleGoalSubmit(event)">
+          <input type="hidden" id="goalFormId" value="">
+          <div class="form-group">
+            <label class="form-label">目标名称 *</label>
+            <input type="text" id="goalFormName" class="form-input" placeholder="例如：新能源车置换基金 / 提前退休金" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">目标金额 (CNY) *</label>
+              <input type="number" step="any" id="goalFormAmount" class="form-input" placeholder="例如：300000.00" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">目标达成日期 *</label>
+              <input type="date" id="goalFormDate" class="form-input" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">关联说明 / 规划备注</label>
+            <input type="text" id="goalFormNotes" class="form-input" placeholder="例如：长期闲钱定投，预计5年后达成">
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+            <button type="button" class="btn btn-outline" onclick="closeGoalModal()">取消</button>
+            <button type="submit" class="btn btn-primary">保存财务目标</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- 底部导航 -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchTab('overview')">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">总览</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('holdings')">
+      <span class="nav-icon">💼</span>
+      <span class="nav-label">持仓</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('transactions')">
+      <span class="nav-icon">🧾</span>
+      <span class="nav-label">流水</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('performance')">
+      <span class="nav-icon">📈</span>
+      <span class="nav-label">收益</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('aip')">
+      <span class="nav-icon">🔄</span>
+      <span class="nav-label">定投</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('allocation')">
+      <span class="nav-icon">⚖️</span>
+      <span class="nav-label">配置</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('goals')">
+      <span class="nav-icon">🎯</span>
+      <span class="nav-label">目标</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('settings')">
+      <span class="nav-icon">⚙️</span>
+      <span class="nav-label">设置</span>
+    </button>
+  </nav>
+
+  <!-- 全局 Toast -->
+  <div id="toast"></div>
+
+  <!-- 核心数据层与工具脚本 -->
+  <script>
+    // 存储 Key
+    const STORAGE_KEY = 'INVEST_ADVISOR_DATA_V1';
+
+    // 默认数据结构
+    const defaultData = {
+      settings: {
+        usdRate: 7.20,
+        hkdRate: 0.92
+      },
+      holdings: [], // 持仓列表
+      transactions: [], // 交易流水
+      snapshots: [], // 每日收盘快照 { date: 'YYYY-MM-DD', totalAsset: number, totalCost: number }
+      aipPlans: [], // 定投计划
+      riskProfile: null, // 风险测评结果
+      goals: [] // 财务目标
+    };
+
+    let appData = loadFromStorage();
+
+    function loadFromStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return JSON.parse(JSON.stringify(defaultData));
+        const parsed = JSON.parse(raw);
+        return Object.assign({}, defaultData, parsed);
+      } catch (e) {
+        console.error('加载本地存储失败', e);
+        return JSON.parse(JSON.stringify(defaultData));
+      }
+    }
+
+    function saveToStorage() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      } catch (e) {
+        showToast('保存数据失败：存储空间超限或权限被禁');
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2200);
+    }
+
+    // 页面导航切换
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+      const targetView = document.getElementById(`view-${tabId}`);
+      if (targetView) targetView.classList.add('active');
+
+      const tabs = ['overview', 'holdings', 'transactions', 'performance', 'aip', 'allocation', 'goals', 'settings'];
+      const index = tabs.indexOf(tabId);
+      if (index >= 0) {
+        const navBtns = document.querySelectorAll('.nav-item');
+        if (navBtns[index]) navBtns[index].classList.add('active');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      // 触发模块渲染
+      if (typeof renderCurrentView === 'function') {
+        renderCurrentView(tabId);
+      }
+    }
+
+    function updateRatesHeader() {
+      const usd = appData.settings.usdRate || 7.20;
+      const hkd = appData.settings.hkdRate || 0.92;
+      document.getElementById('rateUSD').textContent = Number(usd).toFixed(2);
+      document.getElementById('rateHKD').textContent = Number(hkd).toFixed(2);
+      document.getElementById('settingUsdRate').value = usd;
+      document.getElementById('settingHkdRate').value = hkd;
+    }
+
+    function saveRates() {
+      const usd = parseFloat(document.getElementById('settingUsdRate').value);
+      const hkd = parseFloat(document.getElementById('settingHkdRate').value);
+      if (isNaN(usd) || usd <= 0 || isNaN(hkd) || hkd <= 0) {
+        showToast('请输入有效的汇率数值');
+        return;
+      }
+      appData.settings.usdRate = usd;
+      appData.settings.hkdRate = hkd;
+      saveToStorage();
+      updateRatesHeader();
+      showToast('汇率已更新');
+      if (typeof renderAll === 'function') renderAll();
+    }
+
+    function exportDataJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
+      const dlAnchorElem = document.createElement('a');
+      const dateStr = new Date().toISOString().slice(0, 10);
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", `投资顾问备份_${dateStr}.json`);
+      dlAnchorElem.click();
+      showToast('备份文件已导出');
+    }
+
+    function importDataJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (typeof imported !== 'object' || !imported) throw new Error('无效的 JSON 格式');
+          appData = Object.assign({}, defaultData, imported);
+          saveToStorage();
+          updateRatesHeader();
+          if (typeof renderAll === 'function') renderAll();
+          showToast('数据恢复成功');
+        } catch (err) {
+          alert('导入失败，请检查文件是否为合法的投资顾问 JSON 备份。');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function clearAllData() {
+      if (confirm('确定要清空所有数据吗？此操作无法撤销！建议先导出备份。')) {
+        appData = JSON.parse(JSON.stringify(defaultData));
+        saveToStorage();
+        updateRatesHeader();
+        if (typeof renderAll === 'function') renderAll();
+        showToast('已清空全部数据');
+      }
+    }
+
+    // 格式化金额辅助函数
+    function formatMoney(num, digits = 2) {
+      if (num === null || num === undefined || isNaN(num)) return '0.00';
+      return Number(num).toLocaleString('zh-CN', {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits
+      });
+    }
+
+    function formatPercent(num, digits = 2) {
+      if (num === null || num === undefined || isNaN(num)) return '0.00%';
+      const sign = num > 0 ? '+' : '';
+      return `${sign}${Number(num).toFixed(digits)}%`;
+    }
+
+    // 汇率转换成 CNY
+    function toCNY(amount, currency) {
+      const val = parseFloat(amount) || 0;
+      if (currency === 'USD') return val * (appData.settings.usdRate || 7.20);
+      if (currency === 'HKD') return val * (appData.settings.hkdRate || 0.92);
+      return val;
+    }
+
+    // ==========================================
+    // 品类与持仓核心逻辑 (模块 2)
+    // ==========================================
+    const CATEGORIES = {
+      a_stock: { name: 'A股', badgeClass: 'cat-a_stock', type: 'market', defaultCurrency: 'CNY' },
+      etf_lof: { name: '场内基金', badgeClass: 'cat-etf_lof', type: 'market', defaultCurrency: 'CNY' },
+      mutual_fund: { name: '场外基金', badgeClass: 'cat-mutual_fund', type: 'market', defaultCurrency: 'CNY' },
+      hk_us_stock: { name: '港美股', badgeClass: 'cat-hk_us_stock', type: 'market', defaultCurrency: 'USD' },
+      bank_wealth: { name: '银行理财', badgeClass: 'cat-bank_wealth', type: 'fixed', defaultCurrency: 'CNY' },
+      deposit: { name: '存款', badgeClass: 'cat-deposit', type: 'fixed', defaultCurrency: 'CNY' },
+      cash: { name: '现金', badgeClass: 'cat-cash', type: 'cash', defaultCurrency: 'CNY' }
+    };
+
+    let currentHoldingFilter = 'all';
+
+    function calcHolding(h) {
+      const rate = h.currency === 'USD' ? (appData.settings.usdRate || 7.20) : (h.currency === 'HKD' ? (appData.settings.hkdRate || 0.92) : 1);
+      const today = new Date();
+      today.setHours(0,0,0,0);
+
+      if (h.category === 'cash') {
+        const amt = parseFloat(h.amount) || 0;
+        const cny = amt * rate;
+        return {
+          category: h.category,
+          currency: h.currency || 'CNY',
+          marketValueCNY: cny,
+          costCNY: cny,
+          profitCNY: 0,
+          profitRate: 0,
+          shares: amt,
+          costPrice: 1,
+          currentPrice: 1,
+          isEstimated: false
+        };
+      }
+
+      if (h.category === 'bank_wealth' || h.category === 'deposit') {
+        const principal = parseFloat(h.principal) || 0;
+        const rateAnn = parseFloat(h.annualRate) || 0;
+        const start = h.startDate ? new Date(h.startDate + 'T00:00:00') : today;
+        const end = h.endDate ? new Date(h.endDate + 'T00:00:00') : today;
+
+        const effectiveToday = today > end ? end : today;
+        const holdingDays = Math.max(0, Math.floor((effectiveToday - start) / 86400000));
+        // 单利估算本息
+        const estimatedInterest = principal * (rateAnn / 100) * (holdingDays / 365);
+        const currentValue = principal + estimatedInterest;
+        const daysToMaturity = Math.ceil((end - today) / 86400000);
+
+        return {
+          category: h.category,
+          currency: 'CNY',
+          principal,
+          annualRate: rateAnn,
+          holdingDays,
+          daysToMaturity,
+          isExpiringSoon: daysToMaturity >= 0 && daysToMaturity <= 30,
+          isExpired: daysToMaturity < 0,
+          marketValueCNY: currentValue,
+          costCNY: principal,
+          profitCNY: estimatedInterest,
+          profitRate: principal > 0 ? (estimatedInterest / principal) * 100 : 0,
+          shares: principal,
+          costPrice: 1,
+          currentPrice: 1 + (estimatedInterest / principal),
+          isEstimated: true
+        };
+      }
+
+      // 股票与基金
+      const shares = parseFloat(h.shares) || 0;
+      const costPrice = parseFloat(h.costPrice) || 0;
+      const currentPrice = parseFloat(h.currentPrice) || 0;
+      const originalMarketVal = shares * currentPrice;
+      const originalCostVal = shares * costPrice;
+      const marketValueCNY = originalMarketVal * rate;
+      const costCNY = originalCostVal * rate;
+      const profitCNY = marketValueCNY - costCNY;
+      const profitRate = costCNY > 0 ? (profitCNY / costCNY) * 100 : 0;
+
+      return {
+        category: h.category,
+        currency: h.currency || 'CNY',
+        shares,
+        costPrice,
+        currentPrice,
+        originalMarketVal,
+        originalCostVal,
+        marketValueCNY,
+        costCNY,
+        profitCNY,
+        profitRate,
+        isEstimated: false
+      };
+    }
+
+    function renderHoldings() {
+      const container = document.getElementById('holdings-list-container');
+      if (!container) return;
+
+      if (!appData.holdings || appData.holdings.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">💼</div>
+            <h3>当前暂无持仓</h3>
+            <p style="margin: 8px 0 16px;">点击上方“新增持仓”录入，或前往设置载入示例数据。</p>
+            <button class="btn btn-primary" onclick="openAddHoldingModal()">+ 立即新增持仓</button>
+          </div>
+        `;
+        return;
+      }
+
+      // 筛选
+      const filtered = appData.holdings.filter(h => {
+        if (currentHoldingFilter === 'all') return true;
+        return h.category === currentHoldingFilter;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <p>该分类下暂无持仓数据。</p>
+          </div>
+        `;
+        return;
+      }
+
+      // 计算并渲染卡片
+      let html = '';
+      filtered.forEach(h => {
+        const val = calcHolding(h);
+        const catConfig = CATEGORIES[h.category] || { name: '未知', badgeClass: 'cat-cash' };
+        const profitClass = val.profitCNY > 0 ? 'text-up' : (val.profitCNY < 0 ? 'text-down' : 'text-muted');
+        const profitSign = val.profitCNY > 0 ? '+' : '';
+
+        let warningBadge = '';
+        if (val.isExpiringSoon) {
+          warningBadge = `<span class="badge badge-warn">⚠️ 剩余 ${val.daysToMaturity} 天到期</span>`;
+        } else if (val.isExpired) {
+          warningBadge = `<span class="badge" style="background:#fee2e2; color:#b91c1c;">已到期</span>`;
+        }
+
+        let currencyTag = '';
+        if (h.currency && h.currency !== 'CNY') {
+          currencyTag = `<span class="badge-tag">${h.currency}</span>`;
+        }
+
+        let detailGridHtml = '';
+        if (h.category === 'cash') {
+          detailGridHtml = `
+            <div class="holding-grid">
+              <div class="holding-grid-item">
+                <span>原币金额</span>
+                <span>${h.currency} ${formatMoney(h.amount)}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>折合人民币</span>
+                <span>¥${formatMoney(val.marketValueCNY)}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>资产类别</span>
+                <span>活期/备用金</span>
+              </div>
+            </div>
+          `;
+        } else if (h.category === 'bank_wealth' || h.category === 'deposit') {
+          detailGridHtml = `
+            <div class="holding-grid">
+              <div class="holding-grid-item">
+                <span>估算现值(本息)</span>
+                <span>¥${formatMoney(val.marketValueCNY)} <small class="text-muted">(估算)</small></span>
+              </div>
+              <div class="holding-grid-item">
+                <span>投入本金</span>
+                <span>¥${formatMoney(val.costCNY)}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>估算累计收益</span>
+                <span class="${profitClass}">${profitSign}¥${formatMoney(val.profitCNY)}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>年化收益率</span>
+                <span>${Number(h.annualRate).toFixed(2)}%</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>已持有天数</span>
+                <span>${val.holdingDays} 天</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>到期日</span>
+                <span>${h.endDate || '-'}</span>
+              </div>
+            </div>
+          `;
+        } else {
+          // 股票与基金
+          const origCostText = (h.currency && h.currency !== 'CNY') ? `<small class="text-muted">(${h.currency} ${formatMoney(val.costPrice)})</small>` : '';
+          const origCurrText = (h.currency && h.currency !== 'CNY') ? `<small class="text-muted">(${h.currency} ${formatMoney(val.currentPrice)})</small>` : '';
+          detailGridHtml = `
+            <div class="holding-grid">
+              <div class="holding-grid-item">
+                <span>持仓市值(CNY)</span>
+                <span>¥${formatMoney(val.marketValueCNY)}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>持仓盈亏</span>
+                <span class="${profitClass}">${profitSign}¥${formatMoney(val.profitCNY)}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>盈亏比例</span>
+                <span class="${profitClass}">${formatPercent(val.profitRate)}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>持仓数量</span>
+                <span>${formatMoney(val.shares, 0)}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>成本价</span>
+                <span>¥${formatMoney(toCNY(val.costPrice, h.currency))} ${origCostText}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>当前价</span>
+                <span>¥${formatMoney(toCNY(val.currentPrice, h.currency))} ${origCurrText}</span>
+              </div>
+            </div>
+          `;
+        }
+
+        html += `
+          <div class="holding-card">
+            <div class="holding-card-top">
+              <div>
+                <div class="holding-name">
+                  <span class="category-badge ${catConfig.badgeClass}">${catConfig.name}</span>
+                  ${escapeHtml(h.name)}
+                  ${h.code ? `<span class="holding-code">(${escapeHtml(h.code)})</span>` : ''}
+                  ${currencyTag}
+                  ${warningBadge}
+                </div>
+              </div>
+              <div class="holding-actions">
+                <button class="btn btn-outline btn-sm" onclick="openEditHoldingModal('${h.id}')">编辑</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteHolding('${h.id}')">删除</button>
+              </div>
+            </div>
+            ${detailGridHtml}
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function filterHoldings(cat, btn) {
+      currentHoldingFilter = cat;
+      const buttons = document.querySelectorAll('#holding-filter-bar button');
+      buttons.forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderHoldings();
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, function(m) {
+        return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
+      });
+    }
+
+    // 新增/编辑持仓模态框控制
+    function openAddHoldingModal() {
+      document.getElementById('holdingModalTitle').textContent = '新增持仓';
+      document.getElementById('holdingForm').reset();
+      document.getElementById('hFormId').value = '';
+      document.getElementById('hFormCategory').value = 'a_stock';
+      onCategoryChange('a_stock');
+      document.getElementById('holdingModal').classList.remove('hidden');
+    }
+
+    function openEditHoldingModal(id) {
+      const h = appData.holdings.find(item => item.id === id);
+      if (!h) return;
+      document.getElementById('holdingModalTitle').textContent = '编辑持仓';
+      document.getElementById('hFormId').value = h.id;
+      document.getElementById('hFormCategory').value = h.category;
+      document.getElementById('hFormName').value = h.name || '';
+      onCategoryChange(h.category);
+
+      if (h.category === 'cash') {
+        document.getElementById('hFormCashCurrency').value = h.currency || 'CNY';
+        document.getElementById('hFormAmount').value = h.amount || 0;
+      } else if (h.category === 'bank_wealth' || h.category === 'deposit') {
+        document.getElementById('hFormPrincipal').value = h.principal || 0;
+        document.getElementById('hFormAnnualRate').value = h.annualRate || 0;
+        document.getElementById('hFormStartDate').value = h.startDate || '';
+        document.getElementById('hFormEndDate').value = h.endDate || '';
+      } else {
+        document.getElementById('hFormCode').value = h.code || '';
+        document.getElementById('hFormCurrency').value = h.currency || 'CNY';
+        document.getElementById('hFormShares').value = h.shares || 0;
+        document.getElementById('hFormCostPrice').value = h.costPrice || 0;
+        document.getElementById('hFormCurrentPrice').value = h.currentPrice || 0;
+      }
+
+      document.getElementById('holdingModal').classList.remove('hidden');
+    }
+
+    function closeHoldingModal() {
+      document.getElementById('holdingModal').classList.add('hidden');
+    }
+
+    function onCategoryChange(cat) {
+      const isFixed = (cat === 'bank_wealth' || cat === 'deposit');
+      const isCash = (cat === 'cash');
+      const isMarket = !isFixed && !isCash;
+
+      document.getElementById('fieldsMarket').style.display = isMarket ? 'block' : 'none';
+      document.getElementById('fieldsFixed').style.display = isFixed ? 'block' : 'none';
+      document.getElementById('fieldsCash').style.display = isCash ? 'block' : 'none';
+
+      // 币种设置
+      const curSelect = document.getElementById('hFormCurrency');
+      if (cat === 'hk_us_stock') {
+        curSelect.disabled = false;
+        if (curSelect.value === 'CNY') curSelect.value = 'HKD';
+      } else {
+        curSelect.value = 'CNY';
+        curSelect.disabled = true;
+      }
+    }
+
+    function handleHoldingSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('hFormId').value;
+      const cat = document.getElementById('hFormCategory').value;
+      const name = document.getElementById('hFormName').value.trim();
+
+      if (!name) {
+        showToast('请输入资产/产品名称');
+        return;
+      }
+
+      const holding = {
+        id: id || ('h_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4)),
+        category: cat,
+        name: name
+      };
+
+      if (cat === 'cash') {
+        holding.currency = document.getElementById('hFormCashCurrency').value;
+        holding.amount = parseFloat(document.getElementById('hFormAmount').value) || 0;
+      } else if (cat === 'bank_wealth' || cat === 'deposit') {
+        holding.principal = parseFloat(document.getElementById('hFormPrincipal').value) || 0;
+        holding.annualRate = parseFloat(document.getElementById('hFormAnnualRate').value) || 0;
+        holding.startDate = document.getElementById('hFormStartDate').value;
+        holding.endDate = document.getElementById('hFormEndDate').value;
+        holding.currency = 'CNY';
+      } else {
+        holding.code = document.getElementById('hFormCode').value.trim().toUpperCase();
+        holding.currency = (cat === 'hk_us_stock') ? document.getElementById('hFormCurrency').value : 'CNY';
+        holding.shares = parseFloat(document.getElementById('hFormShares').value) || 0;
+        holding.costPrice = parseFloat(document.getElementById('hFormCostPrice').value) || 0;
+        holding.currentPrice = parseFloat(document.getElementById('hFormCurrentPrice').value) || 0;
+      }
+
+      if (id) {
+        const idx = appData.holdings.findIndex(item => item.id === id);
+        if (idx !== -1) appData.holdings[idx] = holding;
+      } else {
+        appData.holdings.push(holding);
+      }
+
+      saveToStorage();
+      closeHoldingModal();
+      showToast(id ? '持仓已修改' : '持仓已添加');
+      if (typeof renderAll === 'function') renderAll();
+    }
+
+    function deleteHolding(id) {
+      const h = appData.holdings.find(item => item.id === id);
+      if (!h) return;
+      if (confirm(`确定要删除持仓【${h.name}】吗？删除后无法恢复。`)) {
+        appData.holdings = appData.holdings.filter(item => item.id !== id);
+        saveToStorage();
+        showToast('已删除持仓');
+        if (typeof renderAll === 'function') renderAll();
+      }
+    }
+
+    // 批量改价
+    function openBatchPriceModal() {
+      const marketHoldings = appData.holdings.filter(h => {
+        return h.category === 'a_stock' || h.category === 'etf_lof' || h.category === 'mutual_fund' || h.category === 'hk_us_stock';
+      });
+
+      const listDiv = document.getElementById('batchPriceList');
+      if (marketHoldings.length === 0) {
+        listDiv.innerHTML = '<p class="text-muted" style="text-align:center; padding:20px;">当前没有需要更新行情的股票或基金持仓。</p>';
+      } else {
+        let html = '<table class="data-table"><thead><tr><th>标的</th><th>币种</th><th>当前价(原币)</th><th>新价格</th></tr></thead><tbody>';
+        marketHoldings.forEach(h => {
+          html += `
+            <tr>
+              <td><strong>${escapeHtml(h.name)}</strong><br><small class="text-muted">${h.code || ''}</small></td>
+              <td>${h.currency || 'CNY'}</td>
+              <td>${formatMoney(h.currentPrice)}</td>
+              <td>
+                <input type="number" step="any" class="form-input batch-price-input" data-id="${h.id}" value="${h.currentPrice}" style="width:110px; padding:4px 8px;">
+              </td>
+            </tr>
+          `;
+        });
+        html += '</tbody></table>';
+        listDiv.innerHTML = html;
+      }
+
+      document.getElementById('batchPriceModal').classList.remove('hidden');
+    }
+
+    function closeBatchPriceModal() {
+      document.getElementById('batchPriceModal').classList.add('hidden');
+    }
+
+    function saveBatchPrices() {
+      const inputs = document.querySelectorAll('.batch-price-input');
+      let changedCount = 0;
+      inputs.forEach(input => {
+        const id = input.getAttribute('data-id');
+        const val = parseFloat(input.value);
+        if (!isNaN(val) && val >= 0) {
+          const h = appData.holdings.find(item => item.id === id);
+          if (h && h.currentPrice !== val) {
+            h.currentPrice = val;
+            changedCount++;
+          }
+        }
+      });
+
+      saveToStorage();
+      closeBatchPriceModal();
+      showToast(`批量改价完成，共更新 ${changedCount} 个标的`);
+      if (typeof renderAll === 'function') renderAll();
+    }
+
+    // ==========================================
+    // 交易流水核心逻辑 (模块 3)
+    // ==========================================
+    function openAddTxModal(presetHoldingId = null) {
+      const select = document.getElementById('txFormHoldingSelect');
+      let html = '<option value="">-- 请选择关联持仓标的 --</option>';
+      appData.holdings.forEach(h => {
+        const catName = CATEGORIES[h.category] ? CATEGORIES[h.category].name : '';
+        html += `<option value="${h.id}">[${catName}] ${escapeHtml(h.name)} ${h.code ? '(' + h.code + ')' : ''}</option>`;
+      });
+      html += '<option value="__NEW__">+ 手动录入新标的</option>';
+      select.innerHTML = html;
+
+      if (presetHoldingId) {
+        select.value = presetHoldingId;
+      } else {
+        select.value = '';
+      }
+      onTxHoldingSelectChange(select.value);
+
+      document.getElementById('txFormType').value = 'buy';
+      document.getElementById('txFormDate').value = new Date().toISOString().slice(0, 10);
+      document.getElementById('txFormShares').value = '';
+      document.getElementById('txFormPrice').value = '';
+      document.getElementById('txFormFee').value = '0.00';
+      document.getElementById('txFormTotalPreview').value = '0.00';
+
+      document.getElementById('txModal').classList.remove('hidden');
+    }
+
+    function closeAddTxModal() {
+      document.getElementById('txModal').classList.add('hidden');
+    }
+
+    function onTxHoldingSelectChange(val) {
+      const manualDiv = document.getElementById('txManualTargetFields');
+      if (val === '__NEW__') {
+        manualDiv.style.display = 'block';
+      } else {
+        manualDiv.style.display = 'none';
+        if (val) {
+          const h = appData.holdings.find(item => item.id === val);
+          if (h && h.currentPrice) {
+            document.getElementById('txFormPrice').value = h.currentPrice;
+          }
+        }
+      }
+      updateTxCalcPreview();
+    }
+
+    function updateTxCalcPreview() {
+      const type = document.getElementById('txFormType').value;
+      const shares = parseFloat(document.getElementById('txFormShares').value) || 0;
+      const price = parseFloat(document.getElementById('txFormPrice').value) || 0;
+      const fee = parseFloat(document.getElementById('txFormFee').value) || 0;
+
+      let total = 0;
+      if (type === 'buy') {
+        total = (shares * price) + fee;
+      } else {
+        total = Math.max(0, (shares * price) - fee);
+      }
+      document.getElementById('txFormTotalPreview').value = total.toFixed(2);
+    }
+
+    function handleTxSubmit(e) {
+      e.preventDefault();
+      const selectVal = document.getElementById('txFormHoldingSelect').value;
+      const type = document.getElementById('txFormType').value;
+      const date = document.getElementById('txFormDate').value;
+      const shares = parseFloat(document.getElementById('txFormShares').value);
+      const price = parseFloat(document.getElementById('txFormPrice').value);
+      const fee = parseFloat(document.getElementById('txFormFee').value) || 0;
+
+      if (!selectVal) {
+        showToast('请选择关联持仓或新建标的');
+        return;
+      }
+      if (isNaN(shares) || shares <= 0) {
+        showToast('请输入有效的成交数量');
+        return;
+      }
+      if (isNaN(price) || price <= 0) {
+        showToast('请输入有效的成交单价');
+        return;
+      }
+
+      let holdingId = selectVal;
+      let targetName = '';
+      let targetCode = '';
+      let currency = 'CNY';
+
+      if (selectVal === '__NEW__') {
+        targetName = document.getElementById('txManualName').value.trim();
+        if (!targetName) {
+          showToast('请输入新标的名称');
+          return;
+        }
+        const category = document.getElementById('txManualCategory').value;
+        targetCode = document.getElementById('txManualCode').value.trim().toUpperCase();
+        currency = document.getElementById('txManualCurrency').value;
+
+        // 自动创建持仓
+        const newHolding = {
+          id: 'h_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+          category: category,
+          name: targetName,
+          code: targetCode,
+          currency: currency,
+          shares: (type === 'buy' ? shares : 0),
+          costPrice: price,
+          currentPrice: price
+        };
+        appData.holdings.push(newHolding);
+        holdingId = newHolding.id;
+      }
+
+      const holding = appData.holdings.find(h => h.id === holdingId);
+      let realizedProfit = null;
+
+      if (holding) {
+        targetName = holding.name;
+        targetCode = holding.code || '';
+        currency = holding.currency || 'CNY';
+
+        if (type === 'buy') {
+          // 加权平均计算成本
+          const oldShares = parseFloat(holding.shares) || 0;
+          const oldCost = parseFloat(holding.costPrice) || 0;
+          const newShares = oldShares + shares;
+          const totalCost = (oldShares * oldCost) + (shares * price) + fee;
+          holding.costPrice = newShares > 0 ? (totalCost / newShares) : price;
+          holding.shares = newShares;
+          if (!holding.currentPrice || holding.currentPrice === 0) {
+            holding.currentPrice = price;
+          }
+        } else if (type === 'sell') {
+          // 卖出计算实现盈亏
+          const oldShares = parseFloat(holding.shares) || 0;
+          const oldCost = parseFloat(holding.costPrice) || 0;
+          if (shares > oldShares) {
+            if (!confirm(`本次卖出数量 (${shares}) 大于当前持仓数量 (${oldShares})，确认继续？持仓数量将清零。`)) {
+              return;
+            }
+          }
+          realizedProfit = (price - oldCost) * shares - fee;
+          holding.shares = Math.max(0, oldShares - shares);
+        }
+      }
+
+      const totalAmount = (type === 'buy') ? ((shares * price) + fee) : Math.max(0, (shares * price) - fee);
+
+      const txRecord = {
+        id: 'tx_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        date: date,
+        holdingId: holdingId,
+        targetName: targetName,
+        targetCode: targetCode,
+        type: type,
+        shares: shares,
+        price: price,
+        fee: fee,
+        currency: currency,
+        totalAmount: totalAmount,
+        realizedProfit: realizedProfit
+      };
+
+      appData.transactions.unshift(txRecord);
+      saveToStorage();
+      closeAddTxModal();
+      showToast(type === 'buy' ? '买入流水已记入并更新持仓成本' : '卖出流水已记入并扣减持仓');
+      if (typeof renderAll === 'function') renderAll();
+    }
+
+    function deleteTx(id) {
+      if (confirm('确定删除该笔流水记录吗？\n\n提示：删除流水不会自动回滚持仓成本与数量，如需修正请在持仓页手动调整。')) {
+        appData.transactions = appData.transactions.filter(t => t.id !== id);
+        saveToStorage();
+        showToast('交易流水已删除');
+        if (typeof renderAll === 'function') renderAll();
+      }
+    }
+
+    function renderTransactions() {
+      const container = document.getElementById('transactions-list-container');
+      if (!container) return;
+
+      if (!appData.transactions || appData.transactions.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🧾</div>
+            <h3>暂无交易流水</h3>
+            <p style="margin: 8px 0 16px;">记录买入和卖出，自动计算持仓加权成本与实现盈亏。</p>
+            <button class="btn btn-primary" onclick="openAddTxModal()">+ 记一笔买卖</button>
+          </div>
+        `;
+        return;
+      }
+
+      const filterType = (document.getElementById('txFilterType') && document.getElementById('txFilterType').value) || 'all';
+      const filterTarget = (document.getElementById('txFilterTarget') ? document.getElementById('txFilterTarget').value : '').trim().toLowerCase();
+
+      // 筛选与排序
+      const filtered = appData.transactions.filter(t => {
+        if (filterType !== 'all' && t.type !== filterType) return false;
+        if (filterTarget) {
+          const matchName = (t.targetName || '').toLowerCase().includes(filterTarget);
+          const matchCode = (t.targetCode || '').toLowerCase().includes(filterTarget);
+          if (!matchName && !matchCode) return false;
+        }
+        return true;
+      });
+
+      filtered.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <p>未找到符合筛选条件的流水记录。</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      filtered.forEach(t => {
+        const isBuy = t.type === 'buy';
+        const typeBadge = isBuy
+          ? `<span class="badge bg-up text-up">买入</span>`
+          : `<span class="badge bg-down text-down">卖出</span>`;
+        const curr = t.currency || 'CNY';
+
+        let profitHtml = '';
+        if (!isBuy && t.realizedProfit !== null && t.realizedProfit !== undefined) {
+          const p = Number(t.realizedProfit);
+          const pClass = p > 0 ? 'text-up' : (p < 0 ? 'text-down' : 'text-muted');
+          const sign = p > 0 ? '+' : '';
+          profitHtml = `
+            <div class="holding-grid-item">
+              <span>本次实现盈亏</span>
+              <span class="${pClass}">${sign}${curr} ${formatMoney(p)}</span>
+            </div>
+          `;
+        }
+
+        html += `
+          <div class="holding-card">
+            <div class="holding-card-top">
+              <div>
+                <div class="holding-name">
+                  ${typeBadge}
+                  ${escapeHtml(t.targetName)}
+                  ${t.targetCode ? `<span class="holding-code">(${escapeHtml(t.targetCode)})</span>` : ''}
+                </div>
+                <div class="text-muted" style="font-size:0.75rem; margin-top:2px;">
+                  📅 ${t.date}
+                </div>
+              </div>
+              <div>
+                <button class="btn btn-outline btn-sm text-down" onclick="deleteTx('${t.id}')" title="删除流水">删除</button>
+              </div>
+            </div>
+            <div class="holding-grid" style="grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));">
+              <div class="holding-grid-item">
+                <span>成交数量</span>
+                <span>${formatMoney(t.shares, 0)}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>成交单价</span>
+                <span>${curr} ${formatMoney(t.price)}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>手续费</span>
+                <span>${curr} ${formatMoney(t.fee || 0)}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>发生总额</span>
+                <span style="color:var(--text-main); font-weight:700;">${curr} ${formatMoney(t.totalAmount)}</span>
+              </div>
+              ${profitHtml}
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    // ==========================================
+    // 资产总览核心逻辑 (模块 1)
+    // ==========================================
+    const CAT_COLORS = {
+      a_stock: '#ef4444',
+      etf_lof: '#6366f1',
+      mutual_fund: '#f59e0b',
+      bank_wealth: '#10b981',
+      hk_us_stock: '#a855f7',
+      deposit: '#0ea5e9',
+      cash: '#64748b'
+    };
+
+    function renderDonutSvg(data, size = 220) {
+      const total = data.reduce((sum, d) => sum + d.value, 0);
+      if (total <= 0) return '';
+      const cx = size / 2;
+      const cy = size / 2;
+      const R = size * 0.42;
+      const r = size * 0.26;
+
+      let startAngle = -Math.PI / 2;
+      let paths = '';
+
+      data.forEach(item => {
+        if (item.value <= 0) return;
+        const sliceAngle = (item.value / total) * 2 * Math.PI;
+        const endAngle = startAngle + sliceAngle;
+
+        const x1 = cx + R * Math.cos(startAngle);
+        const y1 = cy + R * Math.sin(startAngle);
+        const x2 = cx + R * Math.cos(endAngle);
+        const y2 = cy + R * Math.sin(endAngle);
+
+        const ix1 = cx + r * Math.cos(endAngle);
+        const iy1 = cy + r * Math.sin(endAngle);
+        const ix2 = cx + r * Math.cos(startAngle);
+        const iy2 = cy + r * Math.sin(startAngle);
+
+        const largeArc = sliceAngle > Math.PI ? 1 : 0;
+
+        if (sliceAngle >= 2 * Math.PI - 0.001) {
+          paths += `<circle cx="${cx}" cy="${cy}" r="${(R+r)/2}" fill="none" stroke="${item.color}" stroke-width="${R-r}" />`;
+        } else {
+          const d = `M ${x1} ${y1} A ${R} ${R} 0 ${largeArc} 1 ${x2} ${y2} L ${ix1} ${iy1} A ${r} ${r} 0 ${largeArc} 0 ${ix2} ${iy2} Z`;
+          paths += `<path d="${d}" fill="${item.color}" stroke="#ffffff" stroke-width="2" />`;
+        }
+
+        startAngle = endAngle;
+      });
+
+      return `
+        <svg viewBox="0 0 ${size} ${size}" width="100%" height="${size}" style="max-width:${size}px; display:block; margin:0 auto;">
+          ${paths}
+          <circle cx="${cx}" cy="${cy}" r="${r-3}" fill="#ffffff" />
+          <text x="${cx}" y="${cy - 4}" text-anchor="middle" font-size="11" fill="#64748b">资产配置</text>
+          <text x="${cx}" y="${cy + 14}" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">${data.length}类</text>
+        </svg>
+      `;
+    }
+
+    function renderLineSvg(points, width = 560, height = 200) {
+      if (!points || points.length < 2) {
+        return `<div class="empty-state" style="padding:24px 0;"><p>数据点不足，需至少记录2次收盘快照以生成趋势折线图。<br><small class="text-muted">（载入示例数据可立即查看完整趋势图）</small></p></div>`;
+      }
+      const padding = { top: 20, right: 30, bottom: 30, left: 54 };
+      const plotW = width - padding.left - padding.right;
+      const plotH = height - padding.top - padding.bottom;
+
+      const rates = points.map(p => p.rate);
+      let minRate = Math.min(...rates, 0);
+      let maxRate = Math.max(...rates, 0);
+      if (minRate === maxRate) {
+        minRate -= 1;
+        maxRate += 1;
+      }
+      const range = (maxRate - minRate) * 1.25;
+      const effectiveMin = minRate - (range - (maxRate - minRate)) / 2;
+      const effectiveMax = effectiveMin + range;
+
+      const getX = (idx) => padding.left + (idx / (points.length - 1)) * plotW;
+      const getY = (val) => padding.top + plotH - ((val - effectiveMin) / range) * plotH;
+
+      let gridLines = '';
+      const stepCount = 4;
+      for (let i = 0; i <= stepCount; i++) {
+        const val = effectiveMin + (i / stepCount) * range;
+        const y = getY(val);
+        gridLines += `
+          <line x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}" stroke="#e2e8f0" stroke-dasharray="3,3" />
+          <text x="${padding.left - 8}" y="${y + 4}" text-anchor="end" font-size="10" fill="#64748b">${val.toFixed(1)}%</text>
+        `;
+      }
+
+      if (effectiveMin <= 0 && effectiveMax >= 0) {
+        const zeroY = getY(0);
+        gridLines += `<line x1="${padding.left}" y1="${zeroY}" x2="${width - padding.right}" y2="${zeroY}" stroke="#94a3b8" stroke-width="1.5" />`;
+      }
+
+      let pathD = '';
+      let areaD = '';
+      let dots = '';
+      let labels = '';
+
+      points.forEach((p, idx) => {
+        const x = getX(idx);
+        const y = getY(p.rate);
+        if (idx === 0) {
+          pathD += `M ${x} ${y}`;
+          areaD = `M ${x} ${padding.top + plotH} L ${x} ${y}`;
+        } else {
+          pathD += ` L ${x} ${y}`;
+          areaD += ` L ${x} ${y}`;
+        }
+
+        const pointColor = p.rate >= 0 ? '#dc2626' : '#16a34a';
+        dots += `<circle cx="${x}" cy="${y}" r="3.5" fill="${pointColor}" stroke="#ffffff" stroke-width="1.5" />`;
+
+        if (idx === 0 || idx === points.length - 1 || points.length <= 6) {
+          const shortDate = p.date.length > 5 ? p.date.slice(5) : p.date;
+          labels += `<text x="${x}" y="${height - 8}" text-anchor="middle" font-size="10" fill="#64748b">${shortDate}</text>`;
+        }
+      });
+
+      const lastX = getX(points.length - 1);
+      areaD += ` L ${lastX} ${padding.top + plotH} Z`;
+
+      const gradId = 'lineGrad_' + Math.random().toString(36).substr(2, 4);
+
+      return `
+        <svg viewBox="0 0 ${width} ${height}" width="100%" style="overflow:visible; display:block;">
+          <defs>
+            <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#2563eb" stop-opacity="0.3" />
+              <stop offset="100%" stop-color="#2563eb" stop-opacity="0.0" />
+            </linearGradient>
+          </defs>
+          ${gridLines}
+          <path d="${areaD}" fill="url(#${gradId})" />
+          <path d="${pathD}" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+          ${dots}
+          ${labels}
+        </svg>
+      `;
+    }
+
+    function recordTodaySnapshot() {
+      let totalAssetCNY = 0;
+      let totalCostCNY = 0;
+      appData.holdings.forEach(h => {
+        const val = calcHolding(h);
+        totalAssetCNY += val.marketValueCNY;
+        totalCostCNY += val.costCNY;
+      });
+
+      const todayStr = new Date().toISOString().slice(0, 10);
+      if (!appData.snapshots) appData.snapshots = [];
+
+      const existingIdx = appData.snapshots.findIndex(s => s.date === todayStr);
+      if (existingIdx !== -1) {
+        appData.snapshots[existingIdx].totalAsset = totalAssetCNY;
+        appData.snapshots[existingIdx].totalCost = totalCostCNY;
+        showToast(`已更新今日 (${todayStr}) 收盘快照`);
+      } else {
+        appData.snapshots.push({
+          date: todayStr,
+          totalAsset: totalAssetCNY,
+          totalCost: totalCostCNY
+        });
+        appData.snapshots.sort((a,b) => a.date.localeCompare(b.date));
+        showToast(`已生成今日 (${todayStr}) 收盘快照`);
+      }
+
+      saveToStorage();
+      renderOverview();
+    }
+
+    function renderOverview() {
+      const container = document.getElementById('overview-content');
+      if (!container) return;
+
+      if (!appData.holdings || appData.holdings.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📊</div>
+            <h3>暂无资产数据</h3>
+            <p style="margin: 8px 0 16px;">请在设置中载入示例数据，或前往持仓页添加第一笔资产。</p>
+            <button class="btn btn-primary" onclick="loadSampleData()">载入示例数据体验</button>
+          </div>
+        `;
+        return;
+      }
+
+      let totalAssetCNY = 0;
+      let totalCostCNY = 0;
+      const categoryMap = {};
+      Object.keys(CATEGORIES).forEach(k => {
+        categoryMap[k] = { name: CATEGORIES[k].name, marketValueCNY: 0, costCNY: 0, profitCNY: 0, count: 0 };
+      });
+
+      appData.holdings.forEach(h => {
+        const val = calcHolding(h);
+        totalAssetCNY += val.marketValueCNY;
+        totalCostCNY += val.costCNY;
+        if (categoryMap[h.category]) {
+          categoryMap[h.category].marketValueCNY += val.marketValueCNY;
+          categoryMap[h.category].costCNY += val.costCNY;
+          categoryMap[h.category].profitCNY += val.profitCNY;
+          categoryMap[h.category].count += 1;
+        }
+      });
+
+      const totalProfitCNY = totalAssetCNY - totalCostCNY;
+      const totalProfitRate = totalCostCNY > 0 ? (totalProfitCNY / totalCostCNY) * 100 : 0;
+      const totalProfitClass = totalProfitCNY > 0 ? 'text-up' : (totalProfitCNY < 0 ? 'text-down' : 'text-muted');
+      const totalProfitSign = totalProfitCNY > 0 ? '+' : '';
+
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const snapshots = (appData.snapshots || []).slice().sort((a,b) => a.date.localeCompare(b.date));
+      let prevSnapshot = null;
+      for (let i = snapshots.length - 1; i >= 0; i--) {
+        if (snapshots[i].date < todayStr) {
+          prevSnapshot = snapshots[i];
+          break;
+        }
+      }
+
+      let todayChangeHtml = '';
+      if (prevSnapshot && prevSnapshot.totalAsset > 0) {
+        const changeAmt = totalAssetCNY - prevSnapshot.totalAsset;
+        const changeRate = (changeAmt / prevSnapshot.totalAsset) * 100;
+        const changeClass = changeAmt > 0 ? 'text-up' : (changeAmt < 0 ? 'text-down' : 'text-muted');
+        const changeSign = changeAmt > 0 ? '+' : '';
+        todayChangeHtml = `
+          <div>
+            <span class="stat-banner-label">较昨日收盘:</span>
+            <span class="${changeClass}" style="font-weight:700; margin-left:4px;">${changeSign}¥ ${formatMoney(changeAmt)} (${changeSign}${changeRate.toFixed(2)}%)</span>
+          </div>
+        `;
+      } else {
+        todayChangeHtml = `
+          <div style="font-size:0.75rem; color:#94a3b8;">
+            较昨日收盘: 暂无历史对比快照 (点击右侧记录快照)
+          </div>
+        `;
+      }
+
+      const donutSlices = [];
+      let categoryTableRows = '';
+
+      Object.keys(CATEGORIES).forEach(k => {
+        const item = categoryMap[k];
+        if (item.count > 0 && item.marketValueCNY > 0) {
+          const pct = totalAssetCNY > 0 ? (item.marketValueCNY / totalAssetCNY) * 100 : 0;
+          const col = CAT_COLORS[k] || '#3b82f6';
+          donutSlices.push({
+            label: item.name,
+            value: item.marketValueCNY,
+            color: col,
+            percent: pct
+          });
+
+          const pClass = item.profitCNY > 0 ? 'text-up' : (item.profitCNY < 0 ? 'text-down' : 'text-muted');
+          const pSign = item.profitCNY > 0 ? '+' : '';
+          const pRate = item.costCNY > 0 ? (item.profitCNY / item.costCNY) * 100 : 0;
+
+          categoryTableRows += `
+            <tr>
+              <td>
+                <span class="category-badge ${CATEGORIES[k].badgeClass}">${item.name}</span>
+                <small class="text-muted" style="margin-left:4px;">(${item.count}笔)</small>
+              </td>
+              <td>¥ ${formatMoney(item.marketValueCNY)}</td>
+              <td><strong>${pct.toFixed(1)}%</strong></td>
+              <td><span class="${pClass}">${pSign}¥ ${formatMoney(item.profitCNY)} (${formatPercent(pRate)})</span></td>
+            </tr>
+          `;
+        }
+      });
+
+      const trendPoints = snapshots.map(s => {
+        const p = s.totalAsset - s.totalCost;
+        const r = s.totalCost > 0 ? (p / s.totalCost) * 100 : 0;
+        return { date: s.date, rate: r, asset: s.totalAsset };
+      });
+
+      if (trendPoints.length === 0 || trendPoints[trendPoints.length - 1].date !== todayStr) {
+        trendPoints.push({
+          date: todayStr + '(实时)',
+          rate: totalProfitRate,
+          asset: totalAssetCNY
+        });
+      }
+
+      container.innerHTML = `
+        <div class="stat-banner">
+          <div class="stat-banner-top">
+            <span class="stat-banner-label">总资产折合人民币 (CNY)</span>
+            <button class="btn btn-outline btn-sm" style="background:rgba(255,255,255,0.15); border-color:rgba(255,255,255,0.25); color:#fff;" onclick="recordTodaySnapshot()">📸 记录今日收盘</button>
+          </div>
+          <div class="stat-banner-main">¥ ${formatMoney(totalAssetCNY)}</div>
+          <div class="stat-banner-sub">
+            ${todayChangeHtml}
+          </div>
+          <div class="stats-trio">
+            <div class="stats-trio-item">
+              <div class="stats-trio-label">累计本金投入</div>
+              <div class="stats-trio-val">¥ ${formatMoney(totalCostCNY)}</div>
+            </div>
+            <div class="stats-trio-item">
+              <div class="stats-trio-label">累计总收益</div>
+              <div class="stats-trio-val ${totalProfitClass}">${totalProfitSign}¥ ${formatMoney(totalProfitCNY)}</div>
+            </div>
+            <div class="stats-trio-item">
+              <div class="stats-trio-label">累计收益率</div>
+              <div class="stats-trio-val ${totalProfitClass}">${formatPercent(totalProfitRate)}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">🍰 各品类资产占比</h3>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center;">
+            ${renderDonutSvg(donutSlices, 240)}
+          </div>
+          <div class="table-responsive" style="margin-top:14px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>品类</th>
+                  <th>市值金额</th>
+                  <th>占比</th>
+                  <th>持仓盈亏</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${categoryTableRows}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">📈 累计收益率走势曲线</h3>
+            <span class="text-muted" style="font-size:0.75rem;">基于收盘快照与当前净值</span>
+          </div>
+          <div style="padding:10px 0;">
+            ${renderLineSvg(trendPoints, 560, 200)}
+          </div>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // 收益分析核心逻辑 (模块 4)
+    // ==========================================
+    function calculateXIRR(cashFlows) {
+      if (!cashFlows || cashFlows.length < 2) return null;
+      const sorted = cashFlows.slice().sort((a,b) => a.date - b.date);
+      const d0 = sorted[0].date;
+      
+      let hasPos = false;
+      let hasNeg = false;
+      sorted.forEach(cf => {
+        if (cf.amount > 0) hasPos = true;
+        if (cf.amount < 0) hasNeg = true;
+      });
+      if (!hasPos || !hasNeg) return null;
+
+      const daysDiff = (d) => (d - d0) / 86400000;
+
+      // Newton-Raphson
+      let rate = 0.1; // initial guess
+      for (let iter = 0; iter < 50; iter++) {
+        let f = 0;
+        let df = 0;
+        for (let i = 0; i < sorted.length; i++) {
+          const t = daysDiff(sorted[i].date) / 365;
+          const denom = Math.pow(1 + rate, t);
+          if (isNaN(denom) || denom === 0) break;
+          f += sorted[i].amount / denom;
+          df -= (t * sorted[i].amount) / (denom * (1 + rate));
+        }
+        if (Math.abs(df) < 1e-7) break;
+        const newRate = rate - f / df;
+        if (isNaN(newRate)) break;
+        if (Math.abs(newRate - rate) < 1e-5) {
+          rate = newRate;
+          break;
+        }
+        rate = newRate;
+        if (rate <= -0.99 || rate >= 10.0) break;
+      }
+
+      if (isNaN(rate) || rate <= -0.99 || rate >= 10.0) return null;
+      return rate * 100;
+    }
+
+    function renderBarSvg(bars, width = 560, height = 220) {
+      if (!bars || bars.length === 0) {
+        return '<p class="text-muted" style="text-align:center; padding:20px;">暂无品类收益数据</p>';
+      }
+
+      const padding = { top: 25, right: 20, bottom: 40, left: 60 };
+      const plotW = width - padding.left - padding.right;
+      const plotH = height - padding.top - padding.bottom;
+
+      const profits = bars.map(b => b.profitCNY);
+      let maxVal = Math.max(...profits, 0);
+      let minVal = Math.min(...profits, 0);
+      if (maxVal === 0 && minVal === 0) {
+        maxVal = 100;
+        minVal = -100;
+      }
+      const range = (maxVal - minVal) * 1.25;
+      const effectiveMax = maxVal + (range - (maxVal - minVal)) / 2;
+      const effectiveMin = effectiveMax - range;
+
+      const getY = (val) => padding.top + plotH - ((val - effectiveMin) / range) * plotH;
+      const zeroY = getY(0);
+
+      const barWidth = Math.min(36, (plotW / bars.length) * 0.55);
+      const stepX = plotW / bars.length;
+
+      let rects = '';
+      let labels = '';
+      let gridLines = '';
+
+      // Grid lines
+      const steps = 3;
+      for (let i = 0; i <= steps; i++) {
+        const val = effectiveMin + (i / steps) * range;
+        const y = getY(val);
+        gridLines += `
+          <line x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}" stroke="#f1f5f9" stroke-dasharray="3,3" />
+          <text x="${padding.left - 6}" y="${y + 4}" text-anchor="end" font-size="10" fill="#64748b">¥${(val/1000).toFixed(0)}k</text>
+        `;
+      }
+
+      // Zero baseline
+      gridLines += `<line x1="${padding.left}" y1="${zeroY}" x2="${width - padding.right}" y2="${zeroY}" stroke="#94a3b8" stroke-width="1.5" />`;
+
+      bars.forEach((b, idx) => {
+        const cx = padding.left + (idx + 0.5) * stepX;
+        const val = b.profitCNY;
+        const yVal = getY(val);
+        const barH = Math.max(2, Math.abs(zeroY - yVal));
+        const barY = val >= 0 ? yVal : zeroY;
+        const barColor = val >= 0 ? '#dc2626' : '#16a34a';
+
+        rects += `
+          <rect x="${cx - barWidth/2}" y="${barY}" width="${barWidth}" height="${barH}" rx="3" fill="${barColor}" opacity="0.9" />
+        `;
+
+        // Value text
+        const textY = val >= 0 ? (barY - 5) : (barY + barH + 12);
+        const sign = val > 0 ? '+' : '';
+        rects += `
+          <text x="${cx}" y="${textY}" text-anchor="middle" font-size="10" font-weight="600" fill="${barColor}">${sign}¥${(val/1000).toFixed(1)}k</text>
+        `;
+
+        // Category name
+        labels += `
+          <text x="${cx}" y="${height - 10}" text-anchor="middle" font-size="11" fill="#475569" font-weight="500">${b.name}</text>
+        `;
+      });
+
+      return `
+        <svg viewBox="0 0 ${width} ${height}" width="100%" style="overflow:visible; display:block;">
+          ${gridLines}
+          ${rects}
+          ${labels}
+        </svg>
+      `;
+    }
+
+    function renderPerformance() {
+      const container = document.getElementById('performance-container');
+      if (!container) return;
+
+      if (!appData.holdings || appData.holdings.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📈</div>
+            <h3>暂无持仓可分析</h3>
+            <p style="margin: 8px 0 16px;">请先添加持仓或载入示例数据以查看收益分析。</p>
+            <button class="btn btn-primary" onclick="loadSampleData()">载入示例数据体验</button>
+          </div>
+        `;
+        return;
+      }
+
+      let totalAssetCNY = 0;
+      let totalCostCNY = 0;
+      const categoryMap = {};
+      Object.keys(CATEGORIES).forEach(k => {
+        categoryMap[k] = { name: CATEGORIES[k].name, marketValueCNY: 0, costCNY: 0, profitCNY: 0, count: 0 };
+      });
+
+      const holdingValuations = [];
+
+      appData.holdings.forEach(h => {
+        const val = calcHolding(h);
+        totalAssetCNY += val.marketValueCNY;
+        totalCostCNY += val.costCNY;
+        if (categoryMap[h.category]) {
+          categoryMap[h.category].marketValueCNY += val.marketValueCNY;
+          categoryMap[h.category].costCNY += val.costCNY;
+          categoryMap[h.category].profitCNY += val.profitCNY;
+          categoryMap[h.category].count += 1;
+        }
+        holdingValuations.push({
+          holding: h,
+          val: val
+        });
+      });
+
+      const totalProfitCNY = totalAssetCNY - totalCostCNY;
+      const totalProfitRate = totalCostCNY > 0 ? (totalProfitCNY / totalCostCNY) * 100 : 0;
+      const profitClass = totalProfitCNY > 0 ? 'text-up' : (totalProfitCNY < 0 ? 'text-down' : 'text-muted');
+      const profitSign = totalProfitCNY > 0 ? '+' : '';
+
+      // Prepare cash flows for XIRR
+      const today = new Date();
+      const cashFlows = [];
+
+      // 1. Transactions
+      (appData.transactions || []).forEach(t => {
+        const d = new Date(t.date + 'T00:00:00');
+        const cnyAmt = toCNY(t.totalAmount, t.currency);
+        if (t.type === 'buy') {
+          cashFlows.push({ date: d, amount: -cnyAmt });
+        } else if (t.type === 'sell') {
+          cashFlows.push({ date: d, amount: +cnyAmt });
+        }
+      });
+
+      // 2. Fixed deposits / wealth not entered via transactions
+      appData.holdings.forEach(h => {
+        if (h.category === 'bank_wealth' || h.category === 'deposit') {
+          const d = h.startDate ? new Date(h.startDate + 'T00:00:00') : new Date(today.getTime() - 180 * 86400000);
+          cashFlows.push({ date: d, amount: -h.principal });
+        } else if (h.category === 'cash') {
+          // cash baseline
+          cashFlows.push({ date: new Date(today.getTime() - 90 * 86400000), amount: -toCNY(h.amount, h.currency) });
+        }
+      });
+
+      // 3. Current portfolio terminal value
+      cashFlows.push({ date: today, amount: +totalAssetCNY });
+
+      // Run XIRR
+      let annualizedRate = calculateXIRR(cashFlows);
+      let xirrNote = '基于交易现金流的 XIRR 年化算法';
+      if (annualizedRate === null) {
+        // Fallback: estimate from holding periods (assuming average 0.5 year)
+        annualizedRate = totalCostCNY > 0 ? (totalProfitRate / 0.5) : 0;
+        xirrNote = '现金流间隔较短，采用单期加权年化近似估算';
+      }
+
+      // Bar chart data for categories
+      const barData = [];
+      let catTableRows = '';
+      Object.keys(CATEGORIES).forEach(k => {
+        const item = categoryMap[k];
+        if (item.count > 0 && item.marketValueCNY > 0) {
+          barData.push({
+            category: k,
+            name: item.name,
+            profitCNY: item.profitCNY,
+            costCNY: item.costCNY
+          });
+
+          const pC = item.profitCNY > 0 ? 'text-up' : (item.profitCNY < 0 ? 'text-down' : 'text-muted');
+          const pS = item.profitCNY > 0 ? '+' : '';
+          const pR = item.costCNY > 0 ? (item.profitCNY / item.costCNY) * 100 : 0;
+          catTableRows += `
+            <tr>
+              <td><span class="category-badge ${CATEGORIES[k].badgeClass}">${item.name}</span></td>
+              <td>¥${formatMoney(item.marketValueCNY)}</td>
+              <td><span class="${pC}">${pS}¥${formatMoney(item.profitCNY)}</span></td>
+              <td><span class="${pC}">${formatPercent(pR)}</span></td>
+            </tr>
+          `;
+        }
+      });
+
+      // Top Gainers and Losers
+      holdingValuations.sort((a,b) => b.val.profitCNY - a.val.profitCNY);
+      const topGainers = holdingValuations.slice(0, 3).filter(item => item.val.profitCNY > 0);
+      const topLosers = holdingValuations.slice().reverse().slice(0, 3).filter(item => item.val.profitCNY < 0);
+
+      const renderRankList = (list, isGain) => {
+        if (list.length === 0) {
+          return `<p class="text-muted" style="padding:10px 0; font-size:0.8125rem;">暂无${isGain ? '盈利' : '亏损'}标的</p>`;
+        }
+        let html = '';
+        list.forEach((item, idx) => {
+          const h = item.holding;
+          const v = item.val;
+          const pClass = isGain ? 'text-up' : 'text-down';
+          const sign = isGain ? '+' : '';
+          html += `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border-color);">
+              <div>
+                <span style="font-weight:700; color:var(--text-muted); margin-right:6px;">#${idx + 1}</span>
+                <strong>${escapeHtml(h.name)}</strong>
+                <small class="text-muted">${h.code ? '(' + h.code + ')' : ''}</small>
+              </div>
+              <div style="text-align:right;">
+                <div class="${pClass}" style="font-weight:700;">${sign}¥${formatMoney(v.profitCNY)}</div>
+                <div class="${pClass}" style="font-size:0.75rem;">${formatPercent(v.profitRate)}</div>
+              </div>
+            </div>
+          `;
+        });
+        return html;
+      };
+
+      container.innerHTML = `
+        <!-- 收益总览指标卡 -->
+        <div class="card" style="background:var(--primary-light); border-color:#bfdbfe;">
+          <h3 class="card-title" style="color:#1e40af; margin-bottom:14px;">📊 收益综合概况</h3>
+          <div class="stats-trio">
+            <div class="stats-trio-item" style="background:#fff;">
+              <div class="stats-trio-label" style="color:var(--text-muted);">累计总收益</div>
+              <div class="stats-trio-val ${profitClass}">${profitSign}¥ ${formatMoney(totalProfitCNY)}</div>
+            </div>
+            <div class="stats-trio-item" style="background:#fff;">
+              <div class="stats-trio-label" style="color:var(--text-muted);">累计收益率</div>
+              <div class="stats-trio-val ${profitClass}">${formatPercent(totalProfitRate)}</div>
+            </div>
+            <div class="stats-trio-item" style="background:#fff;">
+              <div class="stats-trio-label" style="color:var(--text-muted);">年化收益率 (估算)</div>
+              <div class="stats-trio-val ${profitClass}">${annualizedRate !== null ? formatPercent(annualizedRate) : '-'}</div>
+            </div>
+          </div>
+          <p class="text-muted" style="font-size:0.72rem; margin-top:10px; text-align:right;">
+            * 注：年化收益率采用 XIRR 现金流简化模型单利/复利换算并标注估算。
+          </p>
+        </div>
+
+        <!-- 按品类收益柱状图与表格 -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">📊 各品类收益贡献柱状图</h3>
+          </div>
+          <div style="padding:10px 0;">
+            ${renderBarSvg(barData, 560, 220)}
+          </div>
+          <div class="table-responsive" style="margin-top:10px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>品类</th>
+                  <th>当前市值</th>
+                  <th>收益额</th>
+                  <th>品类收益率</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${catTableRows}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 持仓盈亏榜 -->
+        <div class="form-row">
+          <div class="form-group card">
+            <h3 class="card-title text-up" style="margin-bottom:8px;">🔥 盈利 Top 标的</h3>
+            ${renderRankList(topGainers, true)}
+          </div>
+          <div class="form-group card">
+            <h3 class="card-title text-down" style="margin-bottom:8px;">💧 亏损 Top 标的</h3>
+            ${renderRankList(topLosers, false)}
+          </div>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // 定投计划核心逻辑 (模块 5)
+    // ==========================================
+    function onAipCycleChange(cycle, selectedVal = null) {
+      const select = document.getElementById('aipFormDeductDay');
+      let html = '';
+      if (cycle === 'weekly') {
+        const weekDays = [
+          { val: 1, label: '周一' },
+          { val: 2, label: '周二' },
+          { val: 3, label: '周三' },
+          { val: 4, label: '周四' },
+          { val: 5, label: '周五' }
+        ];
+        weekDays.forEach(w => {
+          html += `<option value="${w.val}">${w.label}</option>`;
+        });
+      } else {
+        for (let i = 1; i <= 28; i++) {
+          html += `<option value="${i}">每月 ${i} 日</option>`;
+        }
+      }
+      select.innerHTML = html;
+      if (selectedVal) select.value = selectedVal;
+    }
+
+    function openAddAipModal(id = null) {
+      const holdingSelect = document.getElementById('aipFormHoldingSelect');
+      const marketHoldings = appData.holdings.filter(h => {
+        return h.category === 'a_stock' || h.category === 'etf_lof' || h.category === 'mutual_fund' || h.category === 'hk_us_stock';
+      });
+
+      if (marketHoldings.length === 0) {
+        alert('请先在持仓页添加至少一个股票或基金标的，再创建定投计划。');
+        return;
+      }
+
+      let html = '';
+      marketHoldings.forEach(h => {
+        const catName = CATEGORIES[h.category] ? CATEGORIES[h.category].name : '';
+        html += `<option value="${h.id}">[${catName}] ${escapeHtml(h.name)} ${h.code ? '(' + h.code + ')' : ''}</option>`;
+      });
+      holdingSelect.innerHTML = html;
+
+      if (id) {
+        const p = (appData.aipPlans || []).find(item => item.id === id);
+        if (!p) return;
+        document.getElementById('aipModalTitle').textContent = '编辑定投计划';
+        document.getElementById('aipFormId').value = p.id;
+        document.getElementById('aipFormName').value = p.name;
+        document.getElementById('aipFormHoldingSelect').value = p.holdingId;
+        document.getElementById('aipFormCycle').value = p.cycle;
+        onAipCycleChange(p.cycle, p.deductDay);
+        document.getElementById('aipFormAmount').value = p.amount;
+      } else {
+        document.getElementById('aipModalTitle').textContent = '新建定投计划';
+        document.getElementById('aipFormId').value = '';
+        document.getElementById('aipFormName').value = '';
+        document.getElementById('aipFormCycle').value = 'weekly';
+        onAipCycleChange('weekly', 1);
+        document.getElementById('aipFormAmount').value = '1000';
+      }
+
+      document.getElementById('aipModal').classList.remove('hidden');
+    }
+
+    function closeAipModal() {
+      document.getElementById('aipModal').classList.add('hidden');
+    }
+
+    function handleAipSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('aipFormId').value;
+      const name = document.getElementById('aipFormName').value.trim();
+      const holdingId = document.getElementById('aipFormHoldingSelect').value;
+      const cycle = document.getElementById('aipFormCycle').value;
+      const deductDay = parseInt(document.getElementById('aipFormDeductDay').value, 10);
+      const amount = parseFloat(document.getElementById('aipFormAmount').value);
+
+      if (!name) {
+        showToast('请输入定投计划名称');
+        return;
+      }
+      if (isNaN(amount) || amount <= 0) {
+        showToast('请输入有效的每期金额');
+        return;
+      }
+
+      const holding = appData.holdings.find(h => h.id === holdingId);
+      const targetName = holding ? `${holding.name}${holding.code ? ' (' + holding.code + ')' : ''}` : '';
+
+      if (!appData.aipPlans) appData.aipPlans = [];
+
+      if (id) {
+        const idx = appData.aipPlans.findIndex(item => item.id === id);
+        if (idx !== -1) {
+          appData.aipPlans[idx].name = name;
+          appData.aipPlans[idx].holdingId = holdingId;
+          appData.aipPlans[idx].targetName = targetName;
+          appData.aipPlans[idx].cycle = cycle;
+          appData.aipPlans[idx].deductDay = deductDay;
+          appData.aipPlans[idx].amount = amount;
+        }
+      } else {
+        const newPlan = {
+          id: 'aip_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+          name: name,
+          holdingId: holdingId,
+          targetName: targetName,
+          cycle: cycle,
+          deductDay: deductDay,
+          amount: amount,
+          lastDeductDate: null,
+          totalInvested: 0
+        };
+        appData.aipPlans.push(newPlan);
+      }
+
+      saveToStorage();
+      closeAipModal();
+      showToast(id ? '定投计划已更新' : '定投计划已创建');
+      if (typeof renderAll === 'function') renderAll();
+    }
+
+    function deleteAip(id) {
+      if (confirm('确定要删除该定投计划吗？持仓与已记入流水不受影响。')) {
+        appData.aipPlans = (appData.aipPlans || []).filter(item => item.id !== id);
+        saveToStorage();
+        showToast('定投计划已删除');
+        if (typeof renderAll === 'function') renderAll();
+      }
+    }
+
+    function checkAipOverdue(plan) {
+      if (!plan.lastDeductDate) {
+        return { isOverdue: true, days: 0, text: '从未执行' };
+      }
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const last = new Date(plan.lastDeductDate + 'T00:00:00');
+      const diffDays = Math.floor((today - last) / 86400000);
+
+      if (plan.cycle === 'weekly' && diffDays > 7) {
+        return { isOverdue: true, days: diffDays, text: `逾期未扣款 (距上次已 ${diffDays} 天)` };
+      }
+      if (plan.cycle === 'monthly' && diffDays > 31) {
+        return { isOverdue: true, days: diffDays, text: `逾期未扣款 (距上次已 ${diffDays} 天)` };
+      }
+      return { isOverdue: false, days: diffDays, text: '正常' };
+    }
+
+    // 确认扣款操作模态框
+    function openAipDeductModal(planId) {
+      const plan = (appData.aipPlans || []).find(p => p.id === planId);
+      if (!plan) return;
+      const holding = appData.holdings.find(h => h.id === plan.holdingId);
+
+      document.getElementById('deductPlanId').value = plan.id;
+      document.getElementById('deductPlanName').textContent = plan.name;
+      document.getElementById('deductPlanTarget').textContent = `关联标的: ${plan.targetName || (holding ? holding.name : '未知')}`;
+      document.getElementById('deductDate').value = new Date().toISOString().slice(0, 10);
+      document.getElementById('deductAmount').value = plan.amount;
+
+      const currPrice = holding ? (holding.currentPrice || holding.costPrice || 1) : 1;
+      document.getElementById('deductPrice').value = currPrice;
+      updateAipDeductSharesPreview();
+
+      document.getElementById('aipDeductModal').classList.remove('hidden');
+    }
+
+    function closeAipDeductModal() {
+      document.getElementById('aipDeductModal').classList.add('hidden');
+    }
+
+    function updateAipDeductSharesPreview() {
+      const amount = parseFloat(document.getElementById('deductAmount').value) || 0;
+      const price = parseFloat(document.getElementById('deductPrice').value) || 0;
+      if (price > 0) {
+        const shares = amount / price;
+        document.getElementById('deductSharesPreview').value = shares.toFixed(2) + ' 股/份';
+      } else {
+        document.getElementById('deductSharesPreview').value = '-';
+      }
+    }
+
+    function handleAipDeductSubmit(e) {
+      e.preventDefault();
+      const planId = document.getElementById('deductPlanId').value;
+      const date = document.getElementById('deductDate').value;
+      const amount = parseFloat(document.getElementById('deductAmount').value);
+      const price = parseFloat(document.getElementById('deductPrice').value);
+
+      if (isNaN(amount) || amount <= 0 || isNaN(price) || price <= 0) {
+        showToast('请输入有效的金额与成交价');
+        return;
+      }
+
+      const plan = (appData.aipPlans || []).find(p => p.id === planId);
+      if (!plan) return;
+      const holding = appData.holdings.find(h => h.id === plan.holdingId);
+      if (!holding) {
+        alert('关联持仓标的已不存在，请先重新编辑定投计划关联有效持仓。');
+        return;
+      }
+
+      const shares = amount / price;
+      const currency = holding.currency || 'CNY';
+
+      // 1. 生成买入流水
+      const tx = {
+        id: 'tx_aip_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        date: date,
+        holdingId: holding.id,
+        targetName: `${holding.name} (定投扣款)`,
+        targetCode: holding.code || '',
+        type: 'buy',
+        shares: shares,
+        price: price,
+        fee: 0,
+        currency: currency,
+        totalAmount: amount,
+        realizedProfit: null
+      };
+      if (!appData.transactions) appData.transactions = [];
+      appData.transactions.unshift(tx);
+
+      // 2. 加权平均更新持仓
+      const oldShares = parseFloat(holding.shares) || 0;
+      const oldCost = parseFloat(holding.costPrice) || 0;
+      const newShares = oldShares + shares;
+      const totalCost = (oldShares * oldCost) + amount;
+      holding.shares = newShares;
+      holding.costPrice = newShares > 0 ? (totalCost / newShares) : price;
+      holding.currentPrice = price;
+
+      // 3. 更新定投计划状态
+      plan.lastDeductDate = date;
+      plan.totalInvested = (parseFloat(plan.totalInvested) || 0) + amount;
+
+      saveToStorage();
+      closeAipDeductModal();
+      showToast(`定投扣款已确认：生成买入流水并计入持仓`);
+      if (typeof renderAll === 'function') renderAll();
+    }
+
+    function renderAip() {
+      const container = document.getElementById('aip-list-container');
+      if (!container) return;
+
+      if (!appData.aipPlans || appData.aipPlans.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🔄</div>
+            <h3>暂无定投计划</h3>
+            <p style="margin: 8px 0 16px;">制定纪律性定投计划，手动确认扣款自动生成流水并更新持仓。</p>
+            <button class="btn btn-primary" onclick="openAddAipModal()">+ 立即新建定投计划</button>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      appData.aipPlans.forEach(plan => {
+        const holding = appData.holdings.find(h => h.id === plan.holdingId);
+        const cycleText = plan.cycle === 'weekly' ? `每周${['日','一','二','三','四','五','六'][plan.deductDay] || plan.deductDay}` : `每月${plan.deductDay}日`;
+        const overdueInfo = checkAipOverdue(plan);
+
+        let overdueBadge = '';
+        if (overdueInfo.isOverdue) {
+          overdueBadge = `<span class="badge" style="background:#fee2e2; color:#b91c1c; font-weight:700;">⚠️ ${overdueInfo.text}</span>`;
+        }
+
+        let holdingMarketVal = '-';
+        let holdingProfitHtml = '-';
+        if (holding) {
+          const v = calcHolding(holding);
+          holdingMarketVal = `¥${formatMoney(v.marketValueCNY)}`;
+          const pC = v.profitCNY > 0 ? 'text-up' : (v.profitCNY < 0 ? 'text-down' : 'text-muted');
+          const pS = v.profitCNY > 0 ? '+' : '';
+          holdingProfitHtml = `<span class="${pC}">${pS}¥${formatMoney(v.profitCNY)} (${formatPercent(v.profitRate)})</span>`;
+        }
+
+        html += `
+          <div class="holding-card">
+            <div class="holding-card-top">
+              <div>
+                <div class="holding-name">
+                  <span>🔄</span>
+                  ${escapeHtml(plan.name)}
+                  <span class="badge badge-tag">${cycleText}</span>
+                  ${overdueBadge}
+                </div>
+                <div class="text-muted" style="font-size:0.75rem; margin-top:2px;">
+                  关联标的: ${escapeHtml(plan.targetName || (holding ? holding.name : '未知'))}
+                </div>
+              </div>
+              <div class="holding-actions">
+                <button class="btn btn-primary btn-sm" onclick="openAipDeductModal('${plan.id}')">⚡ 确认扣款</button>
+                <button class="btn btn-outline btn-sm" onclick="openAddAipModal('${plan.id}')">编辑</button>
+                <button class="btn btn-outline btn-sm text-down" onclick="deleteAip('${plan.id}')">删除</button>
+              </div>
+            </div>
+            <div class="holding-grid">
+              <div class="holding-grid-item">
+                <span>每期定投</span>
+                <span style="color:var(--primary); font-weight:700;">¥${formatMoney(plan.amount)}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>累计定投投入</span>
+                <span>¥${formatMoney(plan.totalInvested || 0)}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>标的当前市值</span>
+                <span>${holdingMarketVal}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>标的累计收益</span>
+                <span>${holdingProfitHtml}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>上次扣款日</span>
+                <span>${plan.lastDeductDate || '尚未扣款'}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>计划状态</span>
+                <span>${overdueInfo.isOverdue ? '<span class="text-up">需扣款</span>' : '<span class="text-down">正常</span>'}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    // ==========================================
+    // 资产配置建议核心逻辑 (模块 6)
+    // ==========================================
+    function openRiskModal() {
+      if (appData.riskProfile && appData.riskProfile.answers) {
+        const a = appData.riskProfile.answers;
+        if (a[0]) document.getElementById('riskQ1').value = a[0];
+        if (a[1]) document.getElementById('riskQ2').value = a[1];
+        if (a[2]) document.getElementById('riskQ3').value = a[2];
+        if (a[3]) document.getElementById('riskQ4').value = a[3];
+        if (a[4]) document.getElementById('riskQ5').value = a[4];
+        if (a[5]) document.getElementById('riskQ6').value = a[5];
+      }
+      document.getElementById('riskModal').classList.remove('hidden');
+    }
+
+    function closeRiskModal() {
+      document.getElementById('riskModal').classList.add('hidden');
+    }
+
+    function handleRiskSubmit(e) {
+      e.preventDefault();
+      const q1 = parseInt(document.getElementById('riskQ1').value, 10);
+      const q2 = parseInt(document.getElementById('riskQ2').value, 10);
+      const q3 = parseInt(document.getElementById('riskQ3').value, 10);
+      const q4 = parseInt(document.getElementById('riskQ4').value, 10);
+      const q5 = parseInt(document.getElementById('riskQ5').value, 10);
+      const q6 = parseInt(document.getElementById('riskQ6').value, 10);
+
+      const score = q1 + q2 + q3 + q4 + q5 + q6;
+      let type = '稳健型';
+      let targetEquity = 40;
+      let targetFixed = 60;
+
+      if (score <= 12) {
+        type = '保守型';
+        targetEquity = 15;
+        targetFixed = 85;
+      } else if (score >= 20) {
+        type = '积极型';
+        targetEquity = 70;
+        targetFixed = 30;
+      } else {
+        type = '稳健型';
+        targetEquity = 40;
+        targetFixed = 60;
+      }
+
+      appData.riskProfile = {
+        score: score,
+        type: type,
+        targetEquity: targetEquity,
+        targetFixed: targetFixed,
+        answers: [q1, q2, q3, q4, q5, q6]
+      };
+
+      saveToStorage();
+      closeRiskModal();
+      showToast(`测评完成：您的风险承受类型为【${type}】`);
+      if (typeof renderAll === 'function') renderAll();
+    }
+
+    function renderAllocation() {
+      const container = document.getElementById('allocation-container');
+      if (!container) return;
+
+      const profile = appData.riskProfile;
+
+      // 统计当前实际权益类与固收类资产市值
+      // 权益类：A股 + 场内基金 + 场外基金 + 港美股
+      // 固收类：银行理财 + 存款 + 现金
+      let equityVal = 0;
+      let fixedVal = 0;
+      const equityCategories = ['a_stock', 'etf_lof', 'mutual_fund', 'hk_us_stock'];
+      const fixedCategories = ['bank_wealth', 'deposit', 'cash'];
+
+      (appData.holdings || []).forEach(h => {
+        const v = calcHolding(h);
+        if (equityCategories.includes(h.category)) {
+          equityVal += v.marketValueCNY;
+        } else if (fixedCategories.includes(h.category)) {
+          fixedVal += v.marketValueCNY;
+        }
+      });
+
+      const totalVal = equityVal + fixedVal;
+      const actualEquityPct = totalVal > 0 ? (equityVal / totalVal) * 100 : 0;
+      const actualFixedPct = totalVal > 0 ? (fixedVal / totalVal) * 100 : 0;
+
+      if (!profile) {
+        container.innerHTML = `
+          <div class="card" style="text-align:center; padding:32px 16px;">
+            <div style="font-size:2.5rem; margin-bottom:12px;">⚖️</div>
+            <h3 style="font-size:1.15rem; margin-bottom:8px;">尚未完成风险承受能力测评</h3>
+            <p class="text-muted" style="font-size:0.875rem; margin-bottom:20px;">
+              完成 6 道科学问卷，量化评估您的投资风险偏好，获取专属的权益与固收资产配置建议及再平衡提示。
+            </p>
+            <button class="btn btn-primary" onclick="openRiskModal()">🚀 开始 6 题风险测评</button>
+          </div>
+        `;
+        return;
+      }
+
+      const diff = actualEquityPct - profile.targetEquity;
+      let adviceBadge = '';
+      let adviceText = '';
+      let adviceBg = '#eff6ff';
+      let adviceBorder = '#bfdbfe';
+
+      if (diff > 5) {
+        adviceBg = '#fef2f2';
+        adviceBorder = '#fecaca';
+        adviceBadge = '<span class="badge" style="background:#fee2e2; color:#b91c1c;">⚠️ 权益偏高，建议止盈/增配固收</span>';
+        adviceText = `
+          当前<strong>权益类资产实际占比达到 ${actualEquityPct.toFixed(1)}%</strong>，高出建议配置目标 (<strong>${profile.targetEquity}%</strong>) 约 <strong>${diff.toFixed(1)}%</strong>。<br>
+          权益类资产（股票及基金）波动较大，当前仓位超出了您的<strong>【${profile.type}】</strong>风险承受能力中枢。若遭遇市场深度调整，可能会带来超出预期的心理压力与回撤。<br>
+          <strong>💡 再平衡建议：</strong>建议逢高逐步止盈部分盈利标的，或将未来定投资金分流至银行理财、存款或现金管理类工具，逐步降低组合波动性。
+        `;
+      } else if (diff < -5) {
+        adviceBg = '#fffbeb';
+        adviceBorder = '#fde68a';
+        adviceBadge = '<span class="badge badge-warn">💡 权益偏低，组合偏防御</span>';
+        adviceText = `
+          当前<strong>固收类与现金占比达到 ${actualFixedPct.toFixed(1)}%</strong>，权益类实际占比仅为 <strong>${actualEquityPct.toFixed(1)}%</strong>（建议目标为 <strong>${profile.targetEquity}%</strong>，偏低 <strong>${Math.abs(diff).toFixed(1)}%</strong>）。<br>
+          当前资产结构高度注重本金确定性，但长期来看，过低的权益敞口可能较难战胜通胀或实现长周期资产增值。<br>
+          <strong>💡 再平衡建议：</strong>可在市场周期底部或阶段性调整时，通过纪律性定投或分批买入宽基指数基金（如沪深300ETF），适度提升权益类仓位至目标比例。
+        `;
+      } else {
+        adviceBg = '#f0fdf4';
+        adviceBorder = '#bbf7d0';
+        adviceBadge = '<span class="badge" style="background:#dcfce7; color:#15803d;">✅ 配置均衡，状态优良</span>';
+        adviceText = `
+          当前实际权益占比 <strong>${actualEquityPct.toFixed(1)}%</strong> 与建议目标 <strong>${profile.targetEquity}%</strong> 偏差在 <strong>±5%</strong> 的合理波动容忍区间内。<br>
+          您的投资组合在进攻性（权益类）与防守性（固收存款类）之间取得了极佳的平衡，符合<strong>【${profile.type}】</strong>投资者的风险收益特征。<br>
+          <strong>💡 再平衡建议：</strong>建议继续保持当前的定投节奏与资产比例，无需大幅调仓。
+        `;
+      }
+
+      container.innerHTML = `
+        <!-- 测评结果卡片 -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header">
+            <div>
+              <span class="badge badge-tag" style="margin-bottom:4px;">测评得分: ${profile.score} / 24 分</span>
+              <h3 class="card-title" style="font-size:1.15rem; color:var(--primary);">
+                您的投资者类型：【${profile.type}】
+              </h3>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="openRiskModal()">重新测评</button>
+          </div>
+          <p class="text-muted" style="font-size:0.8125rem;">
+            基于问卷对您的年龄、投资期限、最大回撤承受度及家庭现金流的综合评估，推荐资产配比：
+            <strong>权益类 ${profile.targetEquity}%</strong> + <strong>固收类 ${profile.targetFixed}%</strong>。
+          </p>
+        </div>
+
+        <!-- 建议配比 vs 实际配比 可视化进度对比 -->
+        <div class="card" style="margin-bottom:14px;">
+          <h3 class="card-title" style="margin-bottom:14px;">📊 建议配置 vs 实际持仓对比</h3>
+          
+          <!-- 建议 -->
+          <div style="margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; font-size:0.8125rem; margin-bottom:4px;">
+              <span><strong>建议配比 (标准模型)</strong></span>
+              <span>权益类 ${profile.targetEquity}% / 固收类 ${profile.targetFixed}%</span>
+            </div>
+            <div style="height:14px; background:#e2e8f0; border-radius:7px; overflow:hidden; display:flex;">
+              <div style="width:${profile.targetEquity}%; background:#ef4444;" title="建议权益: ${profile.targetEquity}%"></div>
+              <div style="width:${profile.targetFixed}%; background:#3b82f6;" title="建议固收: ${profile.targetFixed}%"></div>
+            </div>
+          </div>
+
+          <!-- 实际 -->
+          <div style="margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; font-size:0.8125rem; margin-bottom:4px;">
+              <span><strong>当前实际持仓配比</strong></span>
+              <span>权益类 ${actualEquityPct.toFixed(1)}% / 固收类 ${actualFixedPct.toFixed(1)}%</span>
+            </div>
+            <div style="height:14px; background:#e2e8f0; border-radius:7px; overflow:hidden; display:flex;">
+              <div style="width:${actualEquityPct}%; background:#ef4444;" title="实际权益: ${actualEquityPct.toFixed(1)}%"></div>
+              <div style="width:${actualFixedPct}%; background:#3b82f6;" title="实际固收: ${actualFixedPct.toFixed(1)}%"></div>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:16px; font-size:0.75rem; justify-content:center; padding-top:4px;">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="width:10px; height:10px; background:#ef4444; border-radius:2px; display:inline-block;"></span>
+              <span>权益类（A股/场内/场外基金/港美股）: ¥${formatMoney(equityVal)}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="width:10px; height:10px; background:#3b82f6; border-radius:2px; display:inline-block;"></span>
+              <span>固收类（理财/存款/现金）: ¥${formatMoney(fixedVal)}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 再平衡提示建议 -->
+        <div class="card" style="background:${adviceBg}; border-color:${adviceBorder};">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h4 style="font-size:0.95rem; font-weight:700;">⚖️ 动态再平衡建议</h4>
+            ${adviceBadge}
+          </div>
+          <div style="font-size:0.8125rem; line-height:1.6; color:#1e293b;">
+            ${adviceText}
+          </div>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // 财务目标核心逻辑 (模块 7)
+    // ==========================================
+    function openAddGoalModal(id = null) {
+      if (id) {
+        const g = (appData.goals || []).find(item => item.id === id);
+        if (!g) return;
+        document.getElementById('goalModalTitle').textContent = '编辑财务目标';
+        document.getElementById('goalFormId').value = g.id;
+        document.getElementById('goalFormName').value = g.name;
+        document.getElementById('goalFormAmount').value = g.targetAmount;
+        document.getElementById('goalFormDate').value = g.targetDate;
+        document.getElementById('goalFormNotes').value = g.notes || '';
+      } else {
+        document.getElementById('goalModalTitle').textContent = '新增财务目标';
+        document.getElementById('goalFormId').value = '';
+        document.getElementById('goalFormName').value = '';
+        document.getElementById('goalFormAmount').value = '';
+        const defaultDate = new Date(Date.now() + 365 * 86400000).toISOString().slice(0, 10);
+        document.getElementById('goalFormDate').value = defaultDate;
+        document.getElementById('goalFormNotes').value = '';
+      }
+      document.getElementById('goalModal').classList.remove('hidden');
+    }
+
+    function closeGoalModal() {
+      document.getElementById('goalModal').classList.add('hidden');
+    }
+
+    function handleGoalSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('goalFormId').value;
+      const name = document.getElementById('goalFormName').value.trim();
+      const targetAmount = parseFloat(document.getElementById('goalFormAmount').value);
+      const targetDate = document.getElementById('goalFormDate').value;
+      const notes = document.getElementById('goalFormNotes').value.trim();
+
+      if (!name) {
+        showToast('请输入目标名称');
+        return;
+      }
+      if (isNaN(targetAmount) || targetAmount <= 0) {
+        showToast('请输入有效的目标金额');
+        return;
+      }
+      if (!targetDate) {
+        showToast('请选择目标达成日期');
+        return;
+      }
+
+      if (!appData.goals) appData.goals = [];
+
+      if (id) {
+        const idx = appData.goals.findIndex(item => item.id === id);
+        if (idx !== -1) {
+          appData.goals[idx].name = name;
+          appData.goals[idx].targetAmount = targetAmount;
+          appData.goals[idx].targetDate = targetDate;
+          appData.goals[idx].notes = notes;
+        }
+      } else {
+        const newGoal = {
+          id: 'goal_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+          name: name,
+          targetAmount: targetAmount,
+          targetDate: targetDate,
+          notes: notes
+        };
+        appData.goals.push(newGoal);
+      }
+
+      saveToStorage();
+      closeGoalModal();
+      showToast(id ? '目标已更新' : '已新增财务目标');
+      if (typeof renderAll === 'function') renderAll();
+    }
+
+    function deleteGoal(id) {
+      if (confirm('确定要删除该财务目标吗？')) {
+        appData.goals = (appData.goals || []).filter(item => item.id !== id);
+        saveToStorage();
+        showToast('财务目标已删除');
+        if (typeof renderAll === 'function') renderAll();
+      }
+    }
+
+    function renderGoals() {
+      const container = document.getElementById('goals-list-container');
+      if (!container) return;
+
+      if (!appData.goals || appData.goals.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🎯</div>
+            <h3>暂无财务目标</h3>
+            <p style="margin: 8px 0 16px;">设立清晰的资产目标与时间节点，量化计算每月需投入资金。</p>
+            <button class="btn btn-primary" onclick="openAddGoalModal()">+ 立即创建第一个财务目标</button>
+          </div>
+        `;
+        return;
+      }
+
+      // 计算当前实际总资产折合人民币
+      let totalAssetCNY = 0;
+      (appData.holdings || []).forEach(h => {
+        const v = calcHolding(h);
+        totalAssetCNY += v.marketValueCNY;
+      });
+
+      const today = new Date();
+      today.setHours(0,0,0,0);
+
+      let html = '';
+      appData.goals.forEach(goal => {
+        const targetAmount = parseFloat(goal.targetAmount) || 0;
+        const progressPct = targetAmount > 0 ? (totalAssetCNY / targetAmount) * 100 : 0;
+        const isAchieved = totalAssetCNY >= targetAmount;
+
+        const targetDateObj = new Date(goal.targetDate + 'T00:00:00');
+        const remainingDays = Math.ceil((targetDateObj - today) / 86400000);
+        const remainingMonths = Math.max(1, Math.round(remainingDays / 30.4375));
+        const gap = Math.max(0, targetAmount - totalAssetCNY);
+        const monthlyRequired = (gap > 0 && remainingDays > 0) ? (gap / remainingMonths) : 0;
+
+        let statusBannerHtml = '';
+        let progressColor = '#2563eb';
+
+        if (isAchieved) {
+          progressColor = '#16a34a';
+          statusBannerHtml = `
+            <div style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; border-radius:8px; padding:10px 12px; margin:10px 0; display:flex; align-items:center; gap:8px;">
+              <span style="font-size:1.5rem;">🎉</span>
+              <div>
+                <strong>恭喜达成目标！</strong><br>
+                当前总资产 (¥${formatMoney(totalAssetCNY)}) 已达到或超越目标金额 (¥${formatMoney(targetAmount)})！
+              </div>
+            </div>
+          `;
+        } else if (remainingDays < 0) {
+          statusBannerHtml = `
+            <div style="background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; border-radius:8px; padding:8px 12px; margin:10px 0; font-size:0.8125rem;">
+              ⚠️ 目标日期已届满（已超期 ${Math.abs(remainingDays)} 天），当前尚差 ¥${formatMoney(gap)}，建议延长目标周期或追加投入。
+            </div>
+          `;
+        }
+
+        html += `
+          <div class="holding-card">
+            <div class="holding-card-top">
+              <div>
+                <div class="holding-name">
+                  <span>🎯</span>
+                  ${escapeHtml(goal.name)}
+                  ${isAchieved ? '<span class="badge" style="background:#dcfce7; color:#15803d;">已达成 🎉</span>' : ''}
+                </div>
+                <div class="text-muted" style="font-size:0.75rem; margin-top:2px;">
+                  📅 目标日期: ${goal.targetDate} ${remainingDays >= 0 ? `(剩余 ${remainingDays} 天 / 约 ${remainingMonths} 个月)` : '(已到期)'}
+                </div>
+              </div>
+              <div class="holding-actions">
+                <button class="btn btn-outline btn-sm" onclick="openAddGoalModal('${goal.id}')">编辑</button>
+                <button class="btn btn-outline btn-sm text-down" onclick="deleteGoal('${goal.id}')">删除</button>
+              </div>
+            </div>
+
+            ${statusBannerHtml}
+
+            <!-- 进度条 -->
+            <div style="margin:8px 0;">
+              <div style="display:flex; justify-content:space-between; font-size:0.8125rem; margin-bottom:4px;">
+                <span><strong>达成进度</strong>: ${progressPct.toFixed(1)}%</span>
+                <span class="text-muted">当前总资产 ¥${formatMoney(totalAssetCNY)} / 目标 ¥${formatMoney(targetAmount)}</span>
+              </div>
+              <div style="height:12px; background:#e2e8f0; border-radius:6px; overflow:hidden;">
+                <div style="width:${Math.min(100, Math.max(0, progressPct))}%; height:100%; background:${progressColor}; transition:width 0.3s;"></div>
+              </div>
+            </div>
+
+            <!-- 数据明细网格 -->
+            <div class="holding-grid">
+              <div class="holding-grid-item">
+                <span>目标金额</span>
+                <span style="font-weight:700;">¥${formatMoney(targetAmount)}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>尚差金额</span>
+                <span style="color:${gap > 0 ? 'var(--warn-yellow)' : 'var(--down-green)'};">¥${formatMoney(gap)}</span>
+              </div>
+              <div class="holding-grid-item">
+                <span>每月需新增投入</span>
+                <span style="color:var(--primary); font-weight:700;">
+                  ${isAchieved ? '已达成(0.00)' : (remainingDays <= 0 ? '已逾期' : `¥${formatMoney(monthlyRequired)}`)}
+                </span>
+              </div>
+              <div class="holding-grid-item" style="grid-column: span 3;">
+                <span>规划备注说明</span>
+                <span style="font-weight:normal; color:var(--text-main);">${escapeHtml(goal.notes || '无特别备注')}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    // 示例数据装载
+    function loadSampleData() {
+      const today = new Date();
+      const formatDate = (d) => d.toISOString().slice(0, 10);
+
+      const d60Ago = new Date(today.getTime() - 60 * 86400000);
+      const d180Ago = new Date(today.getTime() - 180 * 86400000);
+      const d360Ago = new Date(today.getTime() - 360 * 86400000);
+      const d20DaysLater = new Date(today.getTime() + 20 * 86400000); // 20天到期，触发黄色预警！
+      const d700DaysLater = new Date(today.getTime() + 700 * 86400000);
+
+      appData = {
+        settings: {
+          usdRate: 7.20,
+          hkdRate: 0.92
+        },
+        holdings: [
+          {
+            id: 'h_sample_1',
+            category: 'a_stock',
+            name: '贵州茅台',
+            code: '600519',
+            currency: 'CNY',
+            shares: 200,
+            costPrice: 1620.00,
+            currentPrice: 1750.00
+          },
+          {
+            id: 'h_sample_2',
+            category: 'etf_lof',
+            name: '沪深300ETF',
+            code: '510300',
+            currency: 'CNY',
+            shares: 20000,
+            costPrice: 3.75,
+            currentPrice: 3.92
+          },
+          {
+            id: 'h_sample_3',
+            category: 'mutual_fund',
+            name: '易方达蓝筹精选',
+            code: '005827',
+            currency: 'CNY',
+            shares: 15000,
+            costPrice: 2.10,
+            currentPrice: 2.05
+          },
+          {
+            id: 'h_sample_4',
+            category: 'hk_us_stock',
+            name: '腾讯控股',
+            code: '00700',
+            currency: 'HKD',
+            shares: 300,
+            costPrice: 340.00,
+            currentPrice: 385.00
+          },
+          {
+            id: 'h_sample_5',
+            category: 'hk_us_stock',
+            name: '苹果公司',
+            code: 'AAPL',
+            currency: 'USD',
+            shares: 60,
+            costPrice: 185.00,
+            currentPrice: 228.00
+          },
+          {
+            id: 'h_sample_6',
+            category: 'bank_wealth',
+            name: '招商银行季季开理财',
+            currency: 'CNY',
+            principal: 100000,
+            annualRate: 3.20,
+            startDate: formatDate(d60Ago),
+            endDate: formatDate(d20DaysLater) // 20天到期，测试黄色倒计时提醒
+          },
+          {
+            id: 'h_sample_7',
+            category: 'deposit',
+            name: '工行三年期大额存单',
+            currency: 'CNY',
+            principal: 200000,
+            annualRate: 3.00,
+            startDate: formatDate(d360Ago),
+            endDate: formatDate(d700DaysLater)
+          },
+          {
+            id: 'h_sample_8',
+            category: 'cash',
+            name: '活期存款与货币基金',
+            currency: 'CNY',
+            amount: 50000
+          }
+        ],
+        transactions: [
+          {
+            id: 'tx_sample_1',
+            date: formatDate(d360Ago),
+            holdingId: 'h_sample_1',
+            targetName: '贵州茅台 (600519)',
+            type: 'buy',
+            shares: 200,
+            price: 1620.00,
+            fee: 50.00,
+            currency: 'CNY'
+          },
+          {
+            id: 'tx_sample_2',
+            date: formatDate(d180Ago),
+            holdingId: 'h_sample_2',
+            targetName: '沪深300ETF (510300)',
+            type: 'buy',
+            shares: 20000,
+            price: 3.75,
+            fee: 15.00,
+            currency: 'CNY'
+          },
+          {
+            id: 'tx_sample_3',
+            date: formatDate(d180Ago),
+            holdingId: 'h_sample_4',
+            targetName: '腾讯控股 (00700)',
+            type: 'buy',
+            shares: 300,
+            price: 340.00,
+            fee: 45.00,
+            currency: 'HKD'
+          },
+          {
+            id: 'tx_sample_4',
+            date: formatDate(d60Ago),
+            holdingId: 'h_sample_5',
+            targetName: '苹果公司 (AAPL)',
+            type: 'buy',
+            shares: 60,
+            price: 185.00,
+            fee: 5.00,
+            currency: 'USD'
+          }
+        ],
+        snapshots: [
+          { date: formatDate(d60Ago), totalAsset: 820000, totalCost: 800000 },
+          { date: formatDate(new Date(today.getTime() - 40 * 86400000)), totalAsset: 845000, totalCost: 800000 },
+          { date: formatDate(new Date(today.getTime() - 20 * 86400000)), totalAsset: 870000, totalCost: 800000 },
+          { date: formatDate(new Date(today.getTime() - 1 * 86400000)), totalAsset: 890000, totalCost: 800000 }
+        ],
+        aipPlans: [
+          {
+            id: 'aip_1',
+            name: '沪深300指数定投',
+            holdingId: 'h_sample_2',
+            targetName: '沪深300ETF (510300)',
+            cycle: 'weekly',
+            deductDay: 1, // 周一
+            amount: 1000,
+            lastDeductDate: formatDate(new Date(today.getTime() - 3 * 86400000)),
+            totalInvested: 24000
+          },
+          {
+            id: 'aip_2',
+            name: '易方达蓝筹精选定投',
+            holdingId: 'h_sample_3',
+            targetName: '易方达蓝筹精选 (005827)',
+            cycle: 'monthly',
+            deductDay: 15, // 每月15日
+            amount: 2000,
+            lastDeductDate: formatDate(new Date(today.getTime() - 35 * 86400000)), // 超过1个月，测试逾期提醒！
+            totalInvested: 30000
+          }
+        ],
+        riskProfile: {
+          score: 19,
+          type: '稳健型',
+          targetEquity: 40,
+          targetFixed: 60,
+          answers: [3, 3, 3, 4, 3, 3]
+        },
+        goals: [
+          {
+            id: 'goal_1',
+            name: '升级家庭新能源车',
+            targetAmount: 250000,
+            targetDate: formatDate(new Date(today.getTime() + 450 * 86400000)),
+            notes: '预计购置增程SUV'
+          },
+          {
+            id: 'goal_2',
+            name: '百万养老储备金',
+            targetAmount: 1000000,
+            targetDate: formatDate(new Date(today.getTime() + 1800 * 86400000)),
+            notes: '长期稳健复利目标'
+          }
+        ]
+      };
+
+      saveToStorage();
+      updateRatesHeader();
+      showToast('已成功载入完整示例数据');
+      if (typeof renderAll === 'function') renderAll();
+    }
+
+    function renderCurrentView(tabId) {
+      if (tabId === 'holdings') renderHoldings();
+      if (tabId === 'transactions' && typeof renderTransactions === 'function') renderTransactions();
+      if (tabId === 'overview' && typeof renderOverview === 'function') renderOverview();
+      if (tabId === 'performance' && typeof renderPerformance === 'function') renderPerformance();
+      if (tabId === 'aip' && typeof renderAip === 'function') renderAip();
+      if (tabId === 'allocation' && typeof renderAllocation === 'function') renderAllocation();
+      if (tabId === 'goals' && typeof renderGoals === 'function') renderGoals();
+    }
+
+    function renderAll() {
+      renderHoldings();
+      if (typeof renderTransactions === 'function') renderTransactions();
+      if (typeof renderOverview === 'function') renderOverview();
+      if (typeof renderPerformance === 'function') renderPerformance();
+      if (typeof renderAip === 'function') renderAip();
+      if (typeof renderAllocation === 'function') renderAllocation();
+      if (typeof renderGoals === 'function') renderGoals();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateRatesHeader();
+      renderAll();
+    });
+  </script>
+</body>
+</html>
