@@ -2,7 +2,7 @@
 
 单文件、离线可用的个人投资组合管理应用。覆盖 A股、场内基金、场外基金、银行理财、港美股、存款六类资产，含 7 个模块：资产总览、持仓管理、交易流水、收益分析、定投计划、资产配置建议、财务目标。
 
-- **在线体验**：打 tag 自动发布的 GitHub Pages 链接（见右侧 Releases）
+- **在线体验**：https://sjq597.github.io/invest-advisor/ （push main 自动更新）
 - **本地使用**：下载 `index.html`，浏览器直接打开即可，零依赖、数据只存本地浏览器
 
 ## 仓库结构
@@ -24,7 +24,7 @@
 
 | 想做什么 | 怎么做 |
 |---|---|
-| 看最新版效果 | 右侧 Releases → 最新版 → 在线链接 / 下载 index.html |
+| 看最新版效果 | https://sjq597.github.io/invest-advisor/（在线）或 Releases 下载 index.html |
 | 提需求 / 报 bug | Issues → New issue（手机装 GitHub App 也行） |
 | 发新版 | `git tag vX.Y.Z && git push origin vX.Y.Z`（自动发版+部署） |
 | 跑测试 | `npm install && npm test` |
