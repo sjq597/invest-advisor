@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>个人投资理财顾问</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%234F46E5%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M6 3h12l4 6-10 13L2 9Z%22/><path d=%22M11 3 8 9l4 13 4-13-3-6%22/><path d=%22M2 9h20%22/></svg>">
   <script>
     // 立即执行以防止深色模式白屏闪烁 (FOUC)
     (function() {
@@ -674,7 +674,50 @@
       margin-top: 2px;
     }
 
-    /* 底部导航栏 */
+    /* 内联 SVG 线性图标 (Lucide 风格) */
+    .icon-svg {
+      display: inline-block;
+      vertical-align: -0.15em;
+      width: 1.15em;
+      height: 1.15em;
+      stroke-width: 2px;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .nav-icon .icon-svg {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.15s ease, stroke 0.15s ease;
+    }
+
+    .empty-icon .icon-svg {
+      width: 48px;
+      height: 48px;
+      stroke-width: 1.5px;
+      color: var(--text-muted);
+    }
+
+    .card-title .icon-svg {
+      width: 1.15em;
+      height: 1.15em;
+      color: var(--primary);
+    }
+
+    .btn .icon-svg {
+      width: 1.05em;
+      height: 1.05em;
+    }
+
+    .theme-btn-icon .icon-svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* 底部导航栏 (5 个 Tab) */
     nav.bottom-nav {
       position: fixed;
       bottom: 0;
@@ -717,16 +760,184 @@
       font-weight: 600;
     }
 
+    .nav-item.active .nav-icon {
+      color: var(--primary);
+    }
+
+    .nav-item.active .nav-icon .icon-svg {
+      stroke: var(--primary);
+      transform: scale(1.08);
+    }
+
     .nav-icon {
       font-size: 1.15rem;
       line-height: 1.2;
       margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .nav-label {
       font-size: 0.65rem;
       white-space: nowrap;
       letter-spacing: -0.2px;
+    }
+
+    /* ActionSheet 底部上滑菜单 (半透明遮罩 + 底部圆角面板) */
+    .action-sheet-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--modal-overlay);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 90;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.22s ease, visibility 0.22s ease;
+    }
+
+    .action-sheet-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .action-sheet-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-bottom: none;
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 520px;
+      padding: 12px 18px calc(24px + env(safe-area-inset-bottom, 0px)) 18px;
+      box-shadow: var(--shadow-modal);
+      transform: translateY(0);
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .action-sheet-overlay.hidden .action-sheet-panel {
+      transform: translateY(100%);
+    }
+
+    .action-sheet-handle {
+      width: 36px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border-strong);
+      margin: 0 auto 12px auto;
+    }
+
+    .action-sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .action-sheet-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .action-sheet-close {
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .action-sheet-close:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .action-sheet-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 420px) {
+      .action-sheet-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .action-sheet-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+      color: var(--text-primary);
+      width: 100%;
+    }
+
+    .action-sheet-item:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      transform: translateY(-1px);
+    }
+
+    .action-sheet-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .action-sheet-icon .icon-svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .action-sheet-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .action-sheet-name {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .action-sheet-desc {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     /* 空状态提示 */
@@ -944,7 +1155,7 @@
   <header class="app-header">
     <div class="header-left">
       <div class="header-logo">
-        <span class="logo-icon">💎</span>
+        <span class="logo-icon"><svg class="icon-svg" style="width:20px;height:20px;color:var(--primary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg></span>
         <div class="logo-text-group">
           <span class="logo-title">个人投资顾问</span>
           <span class="logo-badge">v2</span>
@@ -958,7 +1169,7 @@
         <span class="rate-tag">HKD</span> <span id="rateHKD">0.92</span>
       </div>
       <button type="button" id="themeToggleBtn" class="theme-toggle-btn" onclick="cycleTheme()" title="切换主题">
-        <span id="themeToggleIcon">🌓</span>
+        <span id="themeToggleIcon" style="display:inline-flex;align-items:center;"></span>
         <span id="themeToggleText">系统</span>
       </button>
     </div>
@@ -969,7 +1180,7 @@
     <section id="view-overview" class="tab-view active">
       <div id="overview-content">
         <div class="empty-state">
-          <div class="empty-icon">📊</div>
+          <div class="empty-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg></div>
           <h3>暂无资产数据</h3>
           <p style="margin: 8px 0 16px;">请在设置中载入示例数据，或前往持仓页添加第一笔资产。</p>
           <button class="btn btn-primary" onclick="loadSampleData()">载入示例数据体验</button>
@@ -981,10 +1192,10 @@
     <section id="view-holdings" class="tab-view">
       <div id="holdings-content">
         <div class="card-header" style="flex-wrap:wrap; gap:8px;">
-          <h2 class="card-title">💼 持仓管理</h2>
+          <h2 class="card-title"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg> 持仓管理</h2>
           <div style="display:flex; gap:8px;">
-            <button class="btn btn-outline btn-sm" onclick="openBatchPriceModal()">⚡ 批量改价</button>
-            <button class="btn btn-primary btn-sm" onclick="openAddHoldingModal()">+ 新增持仓</button>
+            <button class="btn btn-outline btn-sm" onclick="openBatchPriceModal()"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> 批量改价</button>
+            <button class="btn btn-primary btn-sm" onclick="openAddHoldingModal()"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg> 新增持仓</button>
           </div>
         </div>
         <!-- 持仓品类筛选快捷栏 -->
@@ -1006,8 +1217,8 @@
     <section id="view-transactions" class="tab-view">
       <div id="transactions-content">
         <div class="card-header" style="flex-wrap:wrap; gap:8px;">
-          <h2 class="card-title">🧾 交易流水</h2>
-          <button class="btn btn-primary btn-sm" onclick="openAddTxModal()">+ 记一笔买卖</button>
+          <h2 class="card-title"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v.5"/><path d="M12 6v.5"/></svg> 交易流水</h2>
+          <button class="btn btn-primary btn-sm" onclick="openAddTxModal()"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg> 记一笔买卖</button>
         </div>
         <!-- 交易流水筛选栏 -->
         <div class="card" style="padding:10px 14px; margin-bottom:12px;">
@@ -1031,7 +1242,7 @@
     <!-- 模块4：收益 -->
     <section id="view-performance" class="tab-view">
       <div id="performance-content">
-        <h2 class="card-title" style="margin-bottom:12px;">收益分析</h2>
+        <h2 class="card-title" style="margin-bottom:12px;"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> 收益分析</h2>
         <div id="performance-container"></div>
       </div>
     </section>
@@ -1040,8 +1251,8 @@
     <section id="view-aip" class="tab-view">
       <div id="aip-content">
         <div class="card-header">
-          <h2 class="card-title">定投计划</h2>
-          <button class="btn btn-primary btn-sm" onclick="openAddAipModal()">+ 新建定投</button>
+          <h2 class="card-title"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg> 定投计划</h2>
+          <button class="btn btn-primary btn-sm" onclick="openAddAipModal()"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg> 新建定投</button>
         </div>
         <div id="aip-list-container"></div>
       </div>
@@ -1050,7 +1261,7 @@
     <!-- 模块6：配置 -->
     <section id="view-allocation" class="tab-view">
       <div id="allocation-content">
-        <h2 class="card-title" style="margin-bottom:12px;">资产配置建议</h2>
+        <h2 class="card-title" style="margin-bottom:12px;"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg> 资产配置建议</h2>
         <div id="allocation-container"></div>
       </div>
     </section>
@@ -1059,8 +1270,8 @@
     <section id="view-goals" class="tab-view">
       <div id="goals-content">
         <div class="card-header">
-          <h2 class="card-title">财务目标</h2>
-          <button class="btn btn-primary btn-sm" onclick="openAddGoalModal()">+ 新增目标</button>
+          <h2 class="card-title"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> 财务目标</h2>
+          <button class="btn btn-primary btn-sm" onclick="openAddGoalModal()"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg> 新增目标</button>
         </div>
         <div id="goals-list-container"></div>
       </div>
@@ -1071,25 +1282,25 @@
 
       <!-- 色彩主题切换 (v2 新增) -->
       <div class="card">
-        <h3 class="card-title" style="margin-bottom:10px;">🎨 界面色彩主题</h3>
+        <h3 class="card-title" style="margin-bottom:10px;"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg> 界面色彩主题</h3>
         <p class="text-muted" style="font-size:0.8125rem; margin-bottom:12px;">深浅色双主题并存，默认跟随操作系统深浅色，亦可手动锁定深色或浅色主题。</p>
         <div class="theme-select-grid">
           <button type="button" class="theme-btn" id="themeBtn_system" onclick="setTheme('system')">
-            <span class="theme-btn-icon">💻</span>
+            <span class="theme-btn-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span>
             <div>
               <div class="theme-btn-title">跟随系统</div>
               <div class="theme-btn-desc">自动匹配系统深浅色</div>
             </div>
           </button>
           <button type="button" class="theme-btn" id="themeBtn_light" onclick="setTheme('light')">
-            <span class="theme-btn-icon">☀️</span>
+            <span class="theme-btn-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span>
             <div>
               <div class="theme-btn-title">浅色模式</div>
               <div class="theme-btn-desc">清爽现代高对比</div>
             </div>
           </button>
           <button type="button" class="theme-btn" id="themeBtn_dark" onclick="setTheme('dark')">
-            <span class="theme-btn-icon">🌙</span>
+            <span class="theme-btn-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>
             <div>
               <div class="theme-btn-title">深色模式</div>
               <div class="theme-btn-desc">深空灰沉浸式体验</div>
@@ -1098,7 +1309,7 @@
         </div>
       </div>
       <div class="card">
-        <h3 class="card-title" style="margin-bottom:16px;">⚙️ 汇率设置（手动折算人民币）</h3>
+        <h3 class="card-title" style="margin-bottom:16px;"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg> 汇率设置（手动折算人民币）</h3>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">USD → CNY 汇率</label>
@@ -1113,7 +1324,7 @@
       </div>
 
       <div class="card">
-        <h3 class="card-title" style="margin-bottom:16px;">💾 数据备份与恢复</h3>
+        <h3 class="card-title" style="margin-bottom:16px;"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg> 数据备份与恢复</h3>
         <p class="text-muted" style="font-size:0.8125rem; margin-bottom:12px;">数据保存在浏览器本地（localStorage），清空浏览器缓存可能会丢失，请定期导出备份。</p>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
           <button class="btn btn-outline" onclick="exportDataJSON()">导出 JSON 备份</button>
@@ -1127,7 +1338,13 @@
       </div>
 
       <div class="card">
-        <h3 class="card-title" style="margin-bottom:8px;">ℹ️ 关于</h3>
+        <h3 class="card-title" style="margin-bottom:8px;"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> 关于</h3>
+        <p class="text-muted" style="font-size:0.8125rem;">
+          个人单机版投资顾问。纯原生前端实现，零第三方依赖，离线可用。<br>
+          遵循中国投资者习惯：红涨绿跌。银行理财/存款按单利估算现值。
+        </p>
+      </div>
+    </section>
         <p class="text-muted" style="font-size:0.8125rem;">
           个人单机版投资顾问。纯原生前端实现，零第三方依赖，离线可用。<br>
           遵循中国投资者习惯：红涨绿跌。银行理财/存款按单利估算现值。
@@ -1140,7 +1357,7 @@
       <div class="modal-content">
         <div class="card-header">
           <h3 class="card-title" id="holdingModalTitle">新增持仓</h3>
-          <button class="btn btn-outline btn-sm" onclick="closeHoldingModal()">✕</button>
+          <button class="btn btn-outline btn-sm" onclick="closeHoldingModal()"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
         </div>
         <form id="holdingForm" onsubmit="handleHoldingSubmit(event)">
           <input type="hidden" id="hFormId" value="">
@@ -1250,8 +1467,8 @@
     <div id="batchPriceModal" class="modal-overlay hidden">
       <div class="modal-content">
         <div class="card-header">
-          <h3 class="card-title">⚡ 批量更新当前价</h3>
-          <button class="btn btn-outline btn-sm" onclick="closeBatchPriceModal()">✕</button>
+          <h3 class="card-title"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> 批量更新当前价</h3>
+          <button class="btn btn-outline btn-sm" onclick="closeBatchPriceModal()"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
         </div>
         <p class="text-muted" style="font-size:0.8125rem; margin-bottom:12px;">
           因为无实时自动行情，可在此逐行修改各股票与基金的最新行情价，一键保存。
@@ -1268,8 +1485,8 @@
     <div id="txModal" class="modal-overlay hidden">
       <div class="modal-content">
         <div class="card-header">
-          <h3 class="card-title">🧾 记录交易流水</h3>
-          <button class="btn btn-outline btn-sm" onclick="closeAddTxModal()">✕</button>
+          <h3 class="card-title"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v.5"/><path d="M12 6v.5"/></svg> 记录交易流水</h3>
+          <button class="btn btn-outline btn-sm" onclick="closeAddTxModal()"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
         </div>
         <form id="txForm" onsubmit="handleTxSubmit(event)">
           <div class="form-group">
@@ -1348,7 +1565,7 @@
           </div>
 
           <div style="background:var(--primary-light); padding:10px 12px; border-radius:8px; margin-top:8px; font-size:0.75rem; color:#1e40af;">
-            💡 <strong>自动更新持仓规则：</strong><br>
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg> <strong>自动更新持仓规则：</strong><br>
             • 买入：自动按加权平均法更新持仓成本价，并增加持仓份额。<br>
             • 卖出：自动扣减持仓数量，并计算本次卖出的实现盈亏。
           </div>
@@ -1366,7 +1583,7 @@
       <div class="modal-content">
         <div class="card-header">
           <h3 class="card-title" id="aipModalTitle">新建定投计划</h3>
-          <button class="btn btn-outline btn-sm" onclick="closeAipModal()">✕</button>
+          <button class="btn btn-outline btn-sm" onclick="closeAipModal()"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
         </div>
         <form id="aipForm" onsubmit="handleAipSubmit(event)">
           <input type="hidden" id="aipFormId" value="">
@@ -1411,8 +1628,8 @@
     <div id="aipDeductModal" class="modal-overlay hidden">
       <div class="modal-content">
         <div class="card-header">
-          <h3 class="card-title">⚡ 确认定投扣款</h3>
-          <button class="btn btn-outline btn-sm" onclick="closeAipDeductModal()">✕</button>
+          <h3 class="card-title"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> 确认定投扣款</h3>
+          <button class="btn btn-outline btn-sm" onclick="closeAipDeductModal()"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
         </div>
         <form id="aipDeductForm" onsubmit="handleAipDeductSubmit(event)">
           <input type="hidden" id="deductPlanId" value="">
@@ -1441,7 +1658,7 @@
             </div>
           </div>
           <p class="text-muted" style="font-size:0.75rem; margin-top:2px;">
-            💡 确认后将自动生成一条买入交易流水，并按加权平均法更新持仓数量与成本价。
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg> 确认后将自动生成一条买入交易流水，并按加权平均法更新持仓数量与成本价。
           </p>
           <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
             <button type="button" class="btn btn-outline" onclick="closeAipDeductModal()">取消</button>
@@ -1455,8 +1672,8 @@
     <div id="riskModal" class="modal-overlay hidden">
       <div class="modal-content">
         <div class="card-header">
-          <h3 class="card-title">📝 投资者风险偏好问卷 (6题)</h3>
-          <button class="btn btn-outline btn-sm" onclick="closeRiskModal()">✕</button>
+          <h3 class="card-title"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg> 投资者风险偏好问卷 (6题)</h3>
+          <button class="btn btn-outline btn-sm" onclick="closeRiskModal()"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
         </div>
         <form id="riskForm" onsubmit="handleRiskSubmit(event)">
           <div class="form-group">
@@ -1532,7 +1749,7 @@
       <div class="modal-content">
         <div class="card-header">
           <h3 class="card-title" id="goalModalTitle">新增财务目标</h3>
-          <button class="btn btn-outline btn-sm" onclick="closeGoalModal()">✕</button>
+          <button class="btn btn-outline btn-sm" onclick="closeGoalModal()"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
         </div>
         <form id="goalForm" onsubmit="handleGoalSubmit(event)">
           <input type="hidden" id="goalFormId" value="">
@@ -1563,41 +1780,83 @@
     </div>
   </main>
 
-  <!-- 底部导航 -->
+  <!-- 底部导航 (5 个 Tab: 总览、持仓、流水、收益、更多) -->
   <nav class="bottom-nav">
-    <button type="button" class="nav-item active" onclick="switchTab('overview')">
-      <span class="nav-icon">📊</span>
+    <button type="button" class="nav-item active" id="navItem-overview" onclick="switchTab('overview')">
+      <span class="nav-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg></span>
       <span class="nav-label">总览</span>
     </button>
-    <button type="button" class="nav-item" onclick="switchTab('holdings')">
-      <span class="nav-icon">💼</span>
+    <button type="button" class="nav-item" id="navItem-holdings" onclick="switchTab('holdings')">
+      <span class="nav-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg></span>
       <span class="nav-label">持仓</span>
     </button>
-    <button type="button" class="nav-item" onclick="switchTab('transactions')">
-      <span class="nav-icon">🧾</span>
+    <button type="button" class="nav-item" id="navItem-transactions" onclick="switchTab('transactions')">
+      <span class="nav-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v.5"/><path d="M12 6v.5"/></svg></span>
       <span class="nav-label">流水</span>
     </button>
-    <button type="button" class="nav-item" onclick="switchTab('performance')">
-      <span class="nav-icon">📈</span>
+    <button type="button" class="nav-item" id="navItem-performance" onclick="switchTab('performance')">
+      <span class="nav-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
       <span class="nav-label">收益</span>
     </button>
-    <button type="button" class="nav-item" onclick="switchTab('aip')">
-      <span class="nav-icon">🔄</span>
-      <span class="nav-label">定投</span>
-    </button>
-    <button type="button" class="nav-item" onclick="switchTab('allocation')">
-      <span class="nav-icon">⚖️</span>
-      <span class="nav-label">配置</span>
-    </button>
-    <button type="button" class="nav-item" onclick="switchTab('goals')">
-      <span class="nav-icon">🎯</span>
-      <span class="nav-label">目标</span>
-    </button>
-    <button type="button" class="nav-item" onclick="switchTab('settings')">
-      <span class="nav-icon">⚙️</span>
-      <span class="nav-label">设置</span>
+    <button type="button" class="nav-item" id="navItem-more" onclick="toggleMoreSheet()">
+      <span class="nav-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></span>
+      <span class="nav-label">更多</span>
     </button>
   </nav>
+
+  <!-- 更多功能 ActionSheet (底部上滑菜单：半透明遮罩 + 底部圆角面板) -->
+  <div id="moreActionSheet" class="action-sheet-overlay hidden" onclick="closeMoreSheet(event)">
+    <div class="action-sheet-panel" onclick="event.stopPropagation()">
+      <div class="action-sheet-handle"></div>
+      <div class="action-sheet-header">
+        <h3 class="action-sheet-title">
+          <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          更多功能
+        </h3>
+        <button type="button" class="action-sheet-close" onclick="closeMoreSheet()" title="关闭">
+          <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div class="action-sheet-grid">
+        <button type="button" class="action-sheet-item" onclick="navigateToModule('aip')">
+          <div class="action-sheet-icon" style="background: rgba(99, 102, 241, 0.12); color: #6366f1;">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
+          </div>
+          <div class="action-sheet-text">
+            <span class="action-sheet-name">定投计划</span>
+            <span class="action-sheet-desc">制定定投策略与扣款记录</span>
+          </div>
+        </button>
+        <button type="button" class="action-sheet-item" onclick="navigateToModule('allocation')">
+          <div class="action-sheet-icon" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+          </div>
+          <div class="action-sheet-text">
+            <span class="action-sheet-name">资产配置建议</span>
+            <span class="action-sheet-desc">风险测评与资产再平衡</span>
+          </div>
+        </button>
+        <button type="button" class="action-sheet-item" onclick="navigateToModule('goals')">
+          <div class="action-sheet-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </div>
+          <div class="action-sheet-text">
+            <span class="action-sheet-name">财务目标</span>
+            <span class="action-sheet-desc">目标测算与达成进度追踪</span>
+          </div>
+        </button>
+        <button type="button" class="action-sheet-item" onclick="navigateToModule('settings')">
+          <div class="action-sheet-icon" style="background: rgba(100, 116, 139, 0.12); color: #64748b;">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div class="action-sheet-text">
+            <span class="action-sheet-name">设置</span>
+            <span class="action-sheet-desc">主题、汇率与数据备份</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- 全局 Toast -->
   <div id="toast"></div>
@@ -1658,6 +1917,45 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
 
 
     // ==========================================
+    // Lucide 风格内联 SVG 图标库 (stroke 2px, 24 网格, 线性圆角)
+    // ==========================================
+    const ICONS = {
+      'grid': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>',
+      'overview': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>',
+      'briefcase': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>',
+      'receipt': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v.5"/><path d="M12 6v.5"/></svg>',
+      'trending-up': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
+      'more-horizontal': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>',
+      'target': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+      'pie-chart': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>',
+      'settings': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>',
+      'x': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
+      'camera': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>',
+      'zap': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+      'calendar': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>',
+      'check': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+      'alert-triangle': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+      'lightbulb': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>',
+      'moon': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>',
+      'sun': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>',
+      'monitor': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+      'plus': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>',
+      'trash': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>',
+      'edit': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>',
+      'gem': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg>',
+      'repeat': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>',
+      'scale': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>',
+      'palette': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>',
+      'save': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>',
+      'info': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
+      'flame': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',
+      'droplet': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>',
+      'bar-chart-2': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+      'file-text': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>',
+      'award': '<svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/></svg>'
+    };
+
+    // ==========================================
     // UI v2: 主题管理与 ECharts 图表渲染引擎
     // ==========================================
     let chartInstances = {};
@@ -1699,13 +1997,13 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
       const textEl = document.getElementById('themeToggleText');
       if (iconEl && textEl) {
         if (theme === 'system') {
-          iconEl.textContent = '🌓';
+          iconEl.innerHTML = ICONS['monitor'];
           textEl.textContent = '系统';
         } else if (theme === 'dark') {
-          iconEl.textContent = '🌙';
+          iconEl.innerHTML = ICONS['moon'];
           textEl.textContent = '深色';
         } else {
-          iconEl.textContent = '☀️';
+          iconEl.innerHTML = ICONS['sun'];
           textEl.textContent = '浅色';
         }
       }
@@ -1913,7 +2211,7 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
             const sign = pt.rate > 0 ? '+' : '';
             const rateColor = pt.rate >= 0 ? colors.upRed : colors.downGreen;
             return `
-              <div style="font-weight:600; margin-bottom:4px; color:${colors.textColor}">📅 ${pt.date}</div>
+              <div style="font-weight:600; margin-bottom:4px; color:${colors.textColor}; display:flex; align-items:center; gap:4px;">${ICONS['calendar']} <span>${pt.date}</span></div>
               <div style="font-size:12px; display:flex; justify-content:space-between; gap:16px; margin-bottom:2px;">
                 <span style="color:${colors.textColor}">累计收益率:</span>
                 <strong style="color:${rateColor}">${sign}${pt.rate.toFixed(2)}%</strong>
@@ -2041,7 +2339,7 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
             const col = b.profitCNY >= 0 ? colors.upRed : colors.downGreen;
             const rate = b.costCNY > 0 ? (b.profitCNY / b.costCNY) * 100 : 0;
             return `
-              <div style="font-weight:600; margin-bottom:4px;">📊 ${b.name}</div>
+              <div style="font-weight:600; margin-bottom:4px; display:flex; align-items:center; gap:4px;">${ICONS['bar-chart-2']} <span>${b.name}</span></div>
               <div style="font-size:12px; display:flex; justify-content:space-between; gap:16px; margin-bottom:2px;">
                 <span style="color:${colors.textColor}">收益额:</span>
                 <strong style="color:${col}">${sign}¥${formatMoney(b.profitCNY)}</strong>
@@ -2159,7 +2457,35 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
       }, 2200);
     }
 
-    // 页面导航切换
+    // 更多上滑菜单 (ActionSheet) 控制
+    function toggleMoreSheet() {
+      const sheet = document.getElementById('moreActionSheet');
+      if (sheet) {
+        if (sheet.classList.contains('hidden')) {
+          sheet.classList.remove('hidden');
+        } else {
+          sheet.classList.add('hidden');
+        }
+      }
+    }
+
+    function closeMoreSheet(event) {
+      if (event && event.target && event.target.closest && event.target.closest('.action-sheet-panel') && !event.target.closest('.action-sheet-close')) {
+        return;
+      }
+      const sheet = document.getElementById('moreActionSheet');
+      if (sheet) {
+        sheet.classList.add('hidden');
+      }
+    }
+
+    function navigateToModule(tabId) {
+      const sheet = document.getElementById('moreActionSheet');
+      if (sheet) sheet.classList.add('hidden');
+      switchTab(tabId);
+    }
+
+    // 页面导航切换 (5 个底栏 Tab: 总览, 持仓, 流水, 收益, 更多)
     function switchTab(tabId) {
       document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -2167,11 +2493,14 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
       const targetView = document.getElementById(`view-${tabId}`);
       if (targetView) targetView.classList.add('active');
 
-      const tabs = ['overview', 'holdings', 'transactions', 'performance', 'aip', 'allocation', 'goals', 'settings'];
-      const index = tabs.indexOf(tabId);
-      if (index >= 0) {
-        const navBtns = document.querySelectorAll('.nav-item');
-        if (navBtns[index]) navBtns[index].classList.add('active');
+      const mainTabs = ['overview', 'holdings', 'transactions', 'performance'];
+      if (mainTabs.includes(tabId)) {
+        const navBtn = document.getElementById(`navItem-${tabId}`);
+        if (navBtn) navBtn.classList.add('active');
+      } else {
+        // AIP / Allocation / Goals / Settings 对应激活“更多”Tab
+        const moreBtn = document.getElementById('navItem-more');
+        if (moreBtn) moreBtn.classList.add('active');
       }
 
       window.scrollTo({ top: 0, behavior: 'instant' });
@@ -2373,10 +2702,10 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
       if (!appData.holdings || appData.holdings.length === 0) {
         container.innerHTML = `
           <div class="empty-state">
-            <div class="empty-icon">💼</div>
+            <div class="empty-icon">${ICONS['briefcase']}</div>
             <h3>当前暂无持仓</h3>
             <p style="margin: 8px 0 16px;">点击上方“新增持仓”录入，或前往设置载入示例数据。</p>
-            <button class="btn btn-primary" onclick="openAddHoldingModal()">+ 立即新增持仓</button>
+            <button class="btn btn-primary" onclick="openAddHoldingModal()">${ICONS['plus']} 立即新增持仓</button>
           </div>
         `;
         return;
@@ -2407,7 +2736,7 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
 
         let warningBadge = '';
         if (val.isExpiringSoon) {
-          warningBadge = `<span class="badge badge-warn">⚠️ 剩余 ${val.daysToMaturity} 天到期</span>`;
+          warningBadge = `<span class="badge badge-warn">${ICONS['alert-triangle']} 剩余 ${val.daysToMaturity} 天到期</span>`;
         } else if (val.isExpired) {
           warningBadge = `<span class="badge" style="background:#fee2e2; color:#b91c1c;">已到期</span>`;
         }
@@ -2903,10 +3232,10 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
       if (!appData.transactions || appData.transactions.length === 0) {
         container.innerHTML = `
           <div class="empty-state">
-            <div class="empty-icon">🧾</div>
+            <div class="empty-icon">${ICONS['receipt']}</div>
             <h3>暂无交易流水</h3>
             <p style="margin: 8px 0 16px;">记录买入和卖出，自动计算持仓加权成本与实现盈亏。</p>
-            <button class="btn btn-primary" onclick="openAddTxModal()">+ 记一笔买卖</button>
+            <button class="btn btn-primary" onclick="openAddTxModal()">${ICONS['plus']} 记一笔买卖</button>
           </div>
         `;
         return;
@@ -2967,8 +3296,8 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
                   ${escapeHtml(t.targetName)}
                   ${t.targetCode ? `<span class="holding-code">(${escapeHtml(t.targetCode)})</span>` : ''}
                 </div>
-                <div class="text-muted" style="font-size:0.75rem; margin-top:2px;">
-                  📅 ${t.date}
+                <div class="text-muted" style="font-size:0.75rem; margin-top:2px; display:flex; align-items:center; gap:4px;">
+                  ${ICONS['calendar']} <span>${t.date}</span>
                 </div>
               </div>
               <div>
@@ -3185,7 +3514,7 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
       if (!appData.holdings || appData.holdings.length === 0) {
         container.innerHTML = `
           <div class="empty-state">
-            <div class="empty-icon">📊</div>
+            <div class="empty-icon">${ICONS['pie-chart']}</div>
             <h3>暂无资产数据</h3>
             <p style="margin: 8px 0 16px;">请在设置中载入示例数据，或前往持仓页添加第一笔资产。</p>
             <button class="btn btn-primary" onclick="loadSampleData()">载入示例数据体验</button>
@@ -3299,7 +3628,7 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
         <div class="stat-banner">
           <div class="stat-banner-top">
             <span class="stat-banner-label">总资产折合人民币 (CNY)</span>
-            <button class="btn btn-outline btn-sm" style="background:rgba(255,255,255,0.15); border-color:rgba(255,255,255,0.25); color:#fff;" onclick="recordTodaySnapshot()">📸 记录今日收盘</button>
+            <button class="btn btn-outline btn-sm" style="background:rgba(255,255,255,0.15); border-color:rgba(255,255,255,0.25); color:#fff;" onclick="recordTodaySnapshot()">${ICONS['camera']} 记录今日收盘</button>
           </div>
           <div class="stat-banner-main">¥ ${formatMoney(totalAssetCNY)}</div>
           <div class="stat-banner-sub">
@@ -3323,7 +3652,7 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
 
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">🍰 各品类资产占比</h3>
+            <h3 class="card-title">${ICONS['pie-chart']} 各品类资产占比</h3>
           </div>
           <div id="echarts-donut-container" style="width:100%; height:260px;"></div>
           <div class="table-responsive" style="margin-top:14px;">
@@ -3345,7 +3674,7 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
 
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">📈 累计收益率走势曲线</h3>
+            <h3 class="card-title">${ICONS['trending-up']} 累计收益率走势曲线</h3>
             <span class="text-muted" style="font-size:0.75rem;">基于收盘快照与当前净值</span>
           </div>
           <div id="echarts-trend-container" style="width:100%; height:230px;"></div>
@@ -3485,7 +3814,7 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
       if (!appData.holdings || appData.holdings.length === 0) {
         container.innerHTML = `
           <div class="empty-state">
-            <div class="empty-icon">📈</div>
+            <div class="empty-icon">${ICONS['trending-up']}</div>
             <h3>暂无持仓可分析</h3>
             <p style="margin: 8px 0 16px;">请先添加持仓或载入示例数据以查看收益分析。</p>
             <button class="btn btn-primary" onclick="loadSampleData()">载入示例数据体验</button>
@@ -3624,7 +3953,7 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
       container.innerHTML = `
         <!-- 收益总览指标卡 -->
         <div class="card" style="background:var(--primary-light); border-color:#bfdbfe;">
-          <h3 class="card-title" style="color:#1e40af; margin-bottom:14px;">📊 收益综合概况</h3>
+          <h3 class="card-title" style="color:#1e40af; margin-bottom:14px;">${ICONS['trending-up']} 收益综合概况</h3>
           <div class="stats-trio">
             <div class="stats-trio-item" style="background:#fff;">
               <div class="stats-trio-label" style="color:var(--text-muted);">累计总收益</div>
@@ -3647,7 +3976,7 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
         <!-- 按品类收益柱状图与表格 -->
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">📊 各品类收益贡献柱状图</h3>
+            <h3 class="card-title">${ICONS['bar-chart-2']} 各品类收益贡献柱状图</h3>
           </div>
           <div id="echarts-bar-container" style="width:100%; height:240px;"></div>
           <div class="table-responsive" style="margin-top:10px;">
@@ -3670,11 +3999,11 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
         <!-- 持仓盈亏榜 -->
         <div class="form-row">
           <div class="form-group card">
-            <h3 class="card-title text-up" style="margin-bottom:8px;">🔥 盈利 Top 标的</h3>
+            <h3 class="card-title text-up" style="margin-bottom:8px;">${ICONS['flame']} 盈利 Top 标的</h3>
             ${renderRankList(topGainers, true)}
           </div>
           <div class="form-group card">
-            <h3 class="card-title text-down" style="margin-bottom:8px;">💧 亏损 Top 标的</h3>
+            <h3 class="card-title text-down" style="margin-bottom:8px;">${ICONS['droplet']} 亏损 Top 标的</h3>
             ${renderRankList(topLosers, false)}
           </div>
         </div>
@@ -3934,10 +4263,10 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
       if (!appData.aipPlans || appData.aipPlans.length === 0) {
         container.innerHTML = `
           <div class="empty-state">
-            <div class="empty-icon">🔄</div>
+            <div class="empty-icon">${ICONS['repeat']}</div>
             <h3>暂无定投计划</h3>
             <p style="margin: 8px 0 16px;">制定纪律性定投计划，手动确认扣款自动生成流水并更新持仓。</p>
-            <button class="btn btn-primary" onclick="openAddAipModal()">+ 立即新建定投计划</button>
+            <button class="btn btn-primary" onclick="openAddAipModal()">${ICONS['plus']} 立即新建定投计划</button>
           </div>
         `;
         return;
@@ -3951,7 +4280,7 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
 
         let overdueBadge = '';
         if (overdueInfo.isOverdue) {
-          overdueBadge = `<span class="badge" style="background:#fee2e2; color:#b91c1c; font-weight:700;">⚠️ ${overdueInfo.text}</span>`;
+          overdueBadge = `<span class="badge" style="background:#fee2e2; color:#b91c1c; font-weight:700;">${ICONS['alert-triangle']} ${overdueInfo.text}</span>`;
         }
 
         let holdingMarketVal = '-';
@@ -3969,7 +4298,7 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
             <div class="holding-card-top">
               <div>
                 <div class="holding-name">
-                  <span>🔄</span>
+                  <span>${ICONS['repeat']}</span>
                   ${escapeHtml(plan.name)}
                   <span class="badge badge-tag">${cycleText}</span>
                   ${overdueBadge}
@@ -3979,7 +4308,7 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
                 </div>
               </div>
               <div class="holding-actions">
-                <button class="btn btn-primary btn-sm" onclick="openAipDeductModal('${plan.id}')">⚡ 确认扣款</button>
+                <button class="btn btn-primary btn-sm" onclick="openAipDeductModal('${plan.id}')">${ICONS['zap']} 确认扣款</button>
                 <button class="btn btn-outline btn-sm" onclick="openAddAipModal('${plan.id}')">编辑</button>
                 <button class="btn btn-outline btn-sm text-down" onclick="deleteAip('${plan.id}')">删除</button>
               </div>
@@ -4109,12 +4438,12 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
       if (!profile) {
         container.innerHTML = `
           <div class="card" style="text-align:center; padding:32px 16px;">
-            <div style="font-size:2.5rem; margin-bottom:12px;">⚖️</div>
+            <div class="empty-icon" style="margin-bottom:12px;">${ICONS['scale']}</div>
             <h3 style="font-size:1.15rem; margin-bottom:8px;">尚未完成风险承受能力测评</h3>
             <p class="text-muted" style="font-size:0.875rem; margin-bottom:20px;">
               完成 6 道科学问卷，量化评估您的投资风险偏好，获取专属的权益与固收资产配置建议及再平衡提示。
             </p>
-            <button class="btn btn-primary" onclick="openRiskModal()">🚀 开始 6 题风险测评</button>
+            <button class="btn btn-primary" onclick="openRiskModal()">${ICONS['zap']} 开始 6 题风险测评</button>
           </div>
         `;
         return;
@@ -4129,29 +4458,29 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
       if (diff > 5) {
         adviceBg = '#fef2f2';
         adviceBorder = '#fecaca';
-        adviceBadge = '<span class="badge" style="background:#fee2e2; color:#b91c1c;">⚠️ 权益偏高，建议止盈/增配固收</span>';
+        adviceBadge = '<span class="badge" style="background:#fee2e2; color:#b91c1c;">' + ICONS['alert-triangle'] + ' 权益偏高，建议止盈/增配固收</span>';
         adviceText = `
           当前<strong>权益类资产实际占比达到 ${actualEquityPct.toFixed(1)}%</strong>，高出建议配置目标 (<strong>${profile.targetEquity}%</strong>) 约 <strong>${diff.toFixed(1)}%</strong>。<br>
           权益类资产（股票及基金）波动较大，当前仓位超出了您的<strong>【${profile.type}】</strong>风险承受能力中枢。若遭遇市场深度调整，可能会带来超出预期的心理压力与回撤。<br>
-          <strong>💡 再平衡建议：</strong>建议逢高逐步止盈部分盈利标的，或将未来定投资金分流至银行理财、存款或现金管理类工具，逐步降低组合波动性。
+          <strong>${ICONS['lightbulb']} 再平衡建议：</strong>建议逢高逐步止盈部分盈利标的，或将未来定投资金分流至银行理财、存款或现金管理类工具，逐步降低组合波动性。
         `;
       } else if (diff < -5) {
         adviceBg = '#fffbeb';
         adviceBorder = '#fde68a';
-        adviceBadge = '<span class="badge badge-warn">💡 权益偏低，组合偏防御</span>';
+        adviceBadge = '<span class="badge badge-warn">' + ICONS['lightbulb'] + ' 权益偏低，组合偏防御</span>';
         adviceText = `
           当前<strong>固收类与现金占比达到 ${actualFixedPct.toFixed(1)}%</strong>，权益类实际占比仅为 <strong>${actualEquityPct.toFixed(1)}%</strong>（建议目标为 <strong>${profile.targetEquity}%</strong>，偏低 <strong>${Math.abs(diff).toFixed(1)}%</strong>）。<br>
           当前资产结构高度注重本金确定性，但长期来看，过低的权益敞口可能较难战胜通胀或实现长周期资产增值。<br>
-          <strong>💡 再平衡建议：</strong>可在市场周期底部或阶段性调整时，通过纪律性定投或分批买入宽基指数基金（如沪深300ETF），适度提升权益类仓位至目标比例。
+          <strong>${ICONS['lightbulb']} 再平衡建议：</strong>可在市场周期底部或阶段性调整时，通过纪律性定投或分批买入宽基指数基金（如沪深300ETF），适度提升权益类仓位至目标比例。
         `;
       } else {
         adviceBg = '#f0fdf4';
         adviceBorder = '#bbf7d0';
-        adviceBadge = '<span class="badge" style="background:#dcfce7; color:#15803d;">✅ 配置均衡，状态优良</span>';
+        adviceBadge = '<span class="badge" style="background:#dcfce7; color:#15803d;">' + ICONS['check'] + ' 配置均衡，状态优良</span>';
         adviceText = `
           当前实际权益占比 <strong>${actualEquityPct.toFixed(1)}%</strong> 与建议目标 <strong>${profile.targetEquity}%</strong> 偏差在 <strong>±5%</strong> 的合理波动容忍区间内。<br>
           您的投资组合在进攻性（权益类）与防守性（固收存款类）之间取得了极佳的平衡，符合<strong>【${profile.type}】</strong>投资者的风险收益特征。<br>
-          <strong>💡 再平衡建议：</strong>建议继续保持当前的定投节奏与资产比例，无需大幅调仓。
+          <strong>${ICONS['lightbulb']} 再平衡建议：</strong>建议继续保持当前的定投节奏与资产比例，无需大幅调仓。
         `;
       }
 
@@ -4175,7 +4504,7 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
 
         <!-- 建议配比 vs 实际配比 可视化进度对比 -->
         <div class="card" style="margin-bottom:14px;">
-          <h3 class="card-title" style="margin-bottom:14px;">📊 建议配置 vs 实际持仓对比</h3>
+          <h3 class="card-title" style="margin-bottom:14px;">${ICONS['scale']} 建议配置 vs 实际持仓对比</h3>
           
           <!-- 建议 -->
           <div style="margin-bottom:14px;">
@@ -4216,7 +4545,7 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
         <!-- 再平衡提示建议 -->
         <div class="card" style="background:${adviceBg}; border-color:${adviceBorder};">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <h4 style="font-size:0.95rem; font-weight:700;">⚖️ 动态再平衡建议</h4>
+            <h4 style="font-size:0.95rem; font-weight:700; display:flex; align-items:center; gap:6px;">${ICONS['scale']} 动态再平衡建议</h4>
             ${adviceBadge}
           </div>
           <div style="font-size:0.8125rem; line-height:1.6; color:#1e293b;">
@@ -4319,10 +4648,10 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
       if (!appData.goals || appData.goals.length === 0) {
         container.innerHTML = `
           <div class="empty-state">
-            <div class="empty-icon">🎯</div>
+            <div class="empty-icon">${ICONS['target']}</div>
             <h3>暂无财务目标</h3>
             <p style="margin: 8px 0 16px;">设立清晰的资产目标与时间节点，量化计算每月需投入资金。</p>
-            <button class="btn btn-primary" onclick="openAddGoalModal()">+ 立即创建第一个财务目标</button>
+            <button class="btn btn-primary" onclick="openAddGoalModal()">${ICONS['plus']} 立即创建第一个财务目标</button>
           </div>
         `;
         return;
@@ -4357,7 +4686,7 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
           progressColor = '#16a34a';
           statusBannerHtml = `
             <div style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; border-radius:8px; padding:10px 12px; margin:10px 0; display:flex; align-items:center; gap:8px;">
-              <span style="font-size:1.5rem;">🎉</span>
+              <span style="display:inline-flex; align-items:center;">${ICONS['award']}</span>
               <div>
                 <strong>恭喜达成目标！</strong><br>
                 当前总资产 (¥${formatMoney(totalAssetCNY)}) 已达到或超越目标金额 (¥${formatMoney(targetAmount)})！
@@ -4366,8 +4695,8 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
           `;
         } else if (remainingDays < 0) {
           statusBannerHtml = `
-            <div style="background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; border-radius:8px; padding:8px 12px; margin:10px 0; font-size:0.8125rem;">
-              ⚠️ 目标日期已届满（已超期 ${Math.abs(remainingDays)} 天），当前尚差 ¥${formatMoney(gap)}，建议延长目标周期或追加投入。
+            <div style="background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; border-radius:8px; padding:8px 12px; margin:10px 0; font-size:0.8125rem; display:flex; align-items:center; gap:6px;">
+              ${ICONS['alert-triangle']} <span>目标日期已届满（已超期 ${Math.abs(remainingDays)} 天），当前尚差 ¥${formatMoney(gap)}，建议延长目标周期或追加投入。</span>
             </div>
           `;
         }
@@ -4377,12 +4706,12 @@ if (typeof window !== 'undefined') { window.echarts = echarts; }
             <div class="holding-card-top">
               <div>
                 <div class="holding-name">
-                  <span>🎯</span>
+                  <span>${ICONS['target']}</span>
                   ${escapeHtml(goal.name)}
-                  ${isAchieved ? '<span class="badge" style="background:#dcfce7; color:#15803d;">已达成 🎉</span>' : ''}
+                  ${isAchieved ? '<span class="badge" style="background:#dcfce7; color:#15803d;">' + ICONS['check'] + ' 已达成</span>' : ''}
                 </div>
-                <div class="text-muted" style="font-size:0.75rem; margin-top:2px;">
-                  📅 目标日期: ${goal.targetDate} ${remainingDays >= 0 ? `(剩余 ${remainingDays} 天 / 约 ${remainingMonths} 个月)` : '(已到期)'}
+                <div class="text-muted" style="font-size:0.75rem; margin-top:2px; display:flex; align-items:center; gap:4px;">
+                  ${ICONS['calendar']} <span>目标日期: ${goal.targetDate} ${remainingDays >= 0 ? `(剩余 ${remainingDays} 天 / 约 ${remainingMonths} 个月)` : '(已到期)'}</span>
                 </div>
               </div>
               <div class="holding-actions">
